@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RepoMuseum - The Foyer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Newsreader:wght@300;400&amp;family=Fira+Code:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#735c00",
+                      "primary-fixed-dim": "#e9c349",
+                      "surface-bright": "#3d392f",
+                      "on-secondary": "#412d00",
+                      "on-secondary-fixed": "#261900",
+                      "on-primary-fixed": "#241a00",
+                      "secondary-fixed": "#ffdea5",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#b4c5ff",
+                      "on-tertiary": "#082b72",
+                      "tertiary-fixed": "#dbe1ff",
+                      "surface-container": "#231f17",
+                      "primary": "#f2ca50",
+                      "surface-container-low": "#1f1b13",
+                      "on-surface": "#eae1d4",
+                      "on-primary-container": "#554300",
+                      "on-background": "#eae1d4",
+                      "on-tertiary-fixed-variant": "#27438a",
+                      "on-primary-fixed-variant": "#574500",
+                      "surface": "#16130b",
+                      "error": "#ffb4ab",
+                      "outline-variant": "#4d4635",
+                      "outline": "#99907c",
+                      "background": "#16130b",
+                      "inverse-surface": "#eae1d4",
+                      "surface-variant": "#38342b",
+                      "secondary-container": "#604403",
+                      "on-secondary-fixed-variant": "#5d4201",
+                      "secondary-fixed-dim": "#e9c176",
+                      "on-error": "#690005",
+                      "primary-container": "#d4af37",
+                      "tertiary-container": "#97b0ff",
+                      "on-tertiary-container": "#254188",
+                      "on-secondary-container": "#dab36a",
+                      "tertiary": "#bfcdff",
+                      "primary-fixed": "#ffe088",
+                      "on-primary": "#3c2f00",
+                      "surface-container-high": "#2d2a21",
+                      "inverse-on-surface": "#343027",
+                      "error-container": "#93000a",
+                      "surface-tint": "#e9c349",
+                      "surface-dim": "#16130b",
+                      "on-tertiary-fixed": "#00174b",
+                      "on-surface-variant": "#d0c5af",
+                      "surface-container-highest": "#38342b",
+                      "surface-container-lowest": "#110e07",
+                      "secondary": "#e9c176"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-page": "64px",
+                      "padding-card": "32px",
+                      "unit": "8px",
+                      "gutter-display": "40px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Newsreader"
+                      ],
+                      "headline-lg": [
+                              "Newsreader"
+                      ],
+                      "code-sm": [
+                              "Fira Code"
+                      ],
+                      "display-xl": [
+                              "Newsreader"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "code-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-xl": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "300"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.15;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        }
+        .spotlight {
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, rgba(22, 19, 11, 0) 50%);
+        }
+        .glass-case {
+            border: 1px solid rgba(245, 245, 220, 0.1);
+        }
+        .glass-case-hover:hover {
+            border-color: rgba(245, 245, 220, 0.3);
+            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary-container selection:text-black">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 border-b border-stone-800 bg-black/90 backdrop-blur-md" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+<div class="flex justify-between items-center px-10 py-6 max-w-[1100px] mx-auto w-full">
+<div class="font-serif italic text-2xl text-amber-500 tracking-widest">
+                RepoMuseum
+            </div>
+<div class="hidden md:flex space-x-8">
+<!-- None are perfectly active for a landing page, but 'The Collection' is closest to the general intent, though perhaps none should be active. We will leave them inactive. -->
+<a class="text-stone-400 font-serif italic hover:text-amber-200 transition-all duration-500 font-body-md text-body-md" href="#">The Collection</a>
+<a class="text-stone-400 font-serif italic hover:text-amber-200 transition-all duration-500 font-body-md text-body-md" href="#">Exhibitions</a>
+<a class="text-stone-400 font-serif italic hover:text-amber-200 transition-all duration-500 font-body-md text-body-md" href="#">Curatorial Team</a>
+<a class="text-stone-400 font-serif italic hover:text-amber-200 transition-all duration-500 font-body-md text-body-md" href="#">Archives</a>
+</div>
+<button class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container border border-primary-container/50 px-4 py-2 hover:bg-primary-container/10 transition-colors">
+                Exhibit Repository
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-40 pb-margin-page px-6 w-full max-w-[1100px] mx-auto flex flex-col items-center justify-center relative">
+<!-- Spotlight behind hero -->
+<div class="absolute inset-0 spotlight pointer-events-none -z-10"></div>
+<!-- Hero Section -->
+<section class="w-full max-w-3xl flex flex-col items-center text-center mt-20 mb-32 relative">
+<h1 class="font-display-xl text-display-xl text-on-background mb-8" style="font-family: 'Newsreader', serif;">
+                Enter the Archives
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mb-16">
+                Submit a repository to our curatorial engine. We synthesize commit history, branch architecture, and code strata into a curated exhibition of software craftsmanship.
+            </p>
+<div class="w-full relative group">
+<label class="absolute -top-6 left-0 font-label-sm text-label-sm text-primary-fixed-dim uppercase tracking-widest" for="repo-url">
+                    Provenance / Source URL
+                </label>
+<input autocomplete="off" class="w-full bg-transparent border-0 border-b border-outline-variant text-on-background font-code-sm text-code-sm py-4 focus:ring-0 focus:border-primary-container placeholder:text-outline/50 transition-colors" id="repo-url" placeholder="https://github.com/owner/repository" spellcheck="false" type="text"/>
+</div>
+<div class="mt-16">
+<!-- Primary Action "Golden Plaque" -->
+<button class="font-label-sm text-label-sm uppercase bg-primary-container text-black px-12 py-4 tracking-widest hover:bg-primary transition-colors flex items-center gap-3">
+<span class="material-symbols-outlined text-black" style="font-size: 18px;">account_balance</span>
+                    Begin Curation
+                </button>
+</div>
+<!-- JavaScript loading sequence placeholder (UI representation only) -->
+<div class="hidden mt-12 flex-col items-center gap-4 text-primary-fixed-dim opacity-0 transition-opacity duration-1000">
+<span class="material-symbols-outlined animate-spin" style="font-size: 24px;">hourglass_empty</span>
+<p class="font-code-sm text-code-sm italic">Dusting off the archives...</p>
+</div>
+</section>
+<!-- The Curator's Method -->
+<section class="w-full mt-margin-page pt-32 border-t border-white/5 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-primary-container/20 to-transparent"></div>
+<div class="flex flex-col md:flex-row gap-gutter-display items-start">
+<div class="w-full md:w-1/3">
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-6">
+                        The Curator's Method
+                    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">
+                        Our archival process treats code not as mere instructions, but as structural art. We extract the narrative embedded in version control.
+                    </p>
+</div>
+<div class="w-full md:w-2/3 grid grid-cols-1 gap-8">
+<!-- Method Item 1 -->
+<div class="glass-case glass-case-hover p-8 relative flex gap-6">
+<div class="w-12 h-12 flex-shrink-0 border border-primary-container/30 rounded-full flex items-center justify-center">
+<span class="font-code-sm text-code-sm text-primary-fixed-dim">01</span>
+</div>
+<div>
+<h3 class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container mb-3">Stratigraphy</h3>
+<p class="font-body-md text-body-md text-on-background/80">
+                                We excavate the commit history, mapping the tectonic shifts of architecture over time to reveal foundational decisions.
+                            </p>
+</div>
+</div>
+<!-- Method Item 2 -->
+<div class="glass-case glass-case-hover p-8 relative flex gap-6 ml-0 md:ml-12">
+<div class="w-12 h-12 flex-shrink-0 border border-primary-container/30 rounded-full flex items-center justify-center">
+<span class="font-code-sm text-code-sm text-primary-fixed-dim">02</span>
+</div>
+<div>
+<h3 class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container mb-3">Taxonomy</h3>
+<p class="font-body-md text-body-md text-on-background/80">
+                                Modules, classes, and functions are cataloged and mounted like rare specimens, their dependencies illuminated.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-stone-900 mt-32 bg-black relative" style="border-top: 0.5px solid rgba(212, 175, 55, 0.3);">
+<div class="flex flex-col md:flex-row justify-between items-center px-10 py-16 max-w-[1100px] mx-auto w-full opacity-80 hover:opacity-100 transition-opacity duration-300">
+<div class="font-serif text-stone-500 text-xs tracking-widest uppercase font-label-sm text-label-sm mb-8 md:mb-0">
+                © 2024 RepoMuseum — All Rights Reserved. Curated for the Digital Archive.
+            </div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-amber-400 transition-colors duration-300 font-label-sm text-label-sm" href="#">Provenance</a>
+<a class="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-amber-400 transition-colors duration-300 font-label-sm text-label-sm" href="#">Acquisitions</a>
+<a class="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-amber-400 transition-colors duration-300 font-label-sm text-label-sm" href="#">Security</a>
+<a class="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-amber-400 transition-colors duration-300 font-label-sm text-label-sm" href="#">Terms of Display</a>
+</div>
+</div>
+</footer>
+</body></html>

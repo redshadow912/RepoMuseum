@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RepoMuseum | Interactive Exhibition</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Newsreader:wght@300;400&family=Fira+Code:wght@400&display=swap" rel="stylesheet"/>
+    
+    <!-- Tailwind CSS (CDN for fast prototyping) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#3d392f",
+              "surface-container": "#231f17",
+              "primary": "#f2ca50",
+              "surface-container-low": "#1f1b13",
+              "on-surface": "#eae1d4",
+              "on-background": "#eae1d4",
+              "surface": "#16130b",
+              "outline-variant": "#4d4635",
+              "outline": "#99907c",
+              "background": "#16130b",
+              "inverse-surface": "#eae1d4",
+              "surface-variant": "#38342b",
+              "primary-container": "#d4af37",
+              "on-primary": "#3c2f00",
+              "surface-container-high": "#2d2a21",
+              "surface-tint": "#e9c349",
+              "surface-dim": "#16130b",
+              "on-surface-variant": "#d0c5af",
+              "surface-container-highest": "#38342b",
+              "surface-container-lowest": "#110e07",
+              "secondary": "#e9c176",
+              "primary-fixed-dim": "#e9c349",
+            },
+            fontFamily: {
+              "label-sm": ["Inter"],
+              "body-md": ["Newsreader"],
+              "headline-lg": ["Newsreader"],
+              "code-sm": ["Fira Code"],
+              "display-xl": ["Newsreader"]
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Global Museum Styles -->
+    <style>
+      body {
+        position: relative;
+        background-color: #16130b;
+        color: #eae1d4;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.15;
+        background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+      }
+      .spotlight {
+        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, rgba(22, 19, 11, 0) 50%);
+      }
+      .glass-case {
+        border: 1px solid rgba(245, 245, 220, 0.1);
+      }
+      .glass-case-hover:hover {
+        border-color: rgba(245, 245, 220, 0.3);
+        background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden selection:bg-primary-container selection:text-black">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
