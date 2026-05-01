@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     nodePolyfills({
-      // To add only specific polyfills, add them here. If no option is passed, adds all polyfills
-      include: ['buffer', 'stream', 'util', 'path', 'events'],
+      // Provide all polyfills since isomorphic-git and memfs need buffer, crypto, stream, util, etc.
       globals: {
         Buffer: true,
         global: true,
