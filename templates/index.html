@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RepoMuseum Tour</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --surface: #1e1e1e;
+      --text: #e0e0e0;
+      --primary: #bb86fc;
+      --secondary: #03dac6;
+      --border: #333;
+      --muted: #888;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    h1, h2, h3 { color: #fff; margin-top: 2rem; }
+    h1 { font-size: 2.5rem; text-align: center; margin-bottom: 0.5rem; color: var(--primary); }
+    .subtitle { text-align: center; color: var(--muted); margin-bottom: 3rem; }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .stat-box {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+    }
+    .stat-value { font-size: 2rem; font-weight: bold; color: var(--secondary); }
+    .stat-label { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    
+    .era-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .era-card {
+      border-left: 4px solid var(--primary);
+      padding-left: 1rem;
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+    .era-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: normal; font-size: 0.9rem; }
+    
+    .flex-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .flex-1 { flex: 1; min-width: 300px; }
+    
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: rgba(187, 134, 252, 0.15);
+      color: var(--primary);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+    }
+    .btn {
+      background: var(--primary);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      display: block;
+      margin: 2rem auto;
+    }
+    .btn:hover { opacity: 0.9; }
+
+    #loading { text-align: center; padding: 5rem; font-size: 1.2rem; color: var(--muted); }
+    #content { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="loading">Loading exhibition...</div>
+  <div id="content">
+    <!-- Welcome Hall -->
+    <header>
+      <h1 id="repoName"></h1>
+      <div class="subtitle" id="repoPath"></div>
+      
+      <div class="card">
+        <h2>Welcome Hall</h2>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-value" id="s-commits"></div><div class="stat-label">Commits</div></div>
+          <div class="stat-box"><div class="stat-value" id="s-authors"></div><div class="stat-label">Authors</div></div>
+          <div class="stat-box"><div class="stat-value" id="s-files"></div><div class="stat-label">Files Touched</div></div>
+          <div class="stat-box"><div class="stat-value" id="s-time"></div><div class="stat-label">Timeline</div></div>
+        </div>
+        <p id="tourIntro" style="font-style: italic; color: var(--muted); text-align: center;"></p>
+        <button class="btn" onclick="copySummary()">Copy Tour Summary</button>
+      </div>
+    </header>
+
+    <!-- Artifacts & Oddities -->
+    <div class="card">
+      <h2>Artifacts & Oddities</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">Oldest Active File</div>
+          <div style="margin-top:0.5rem; font-family: monospace;" id="art-oldest"></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Most Renamed File</div>
+          <div style="margin-top:0.5rem; font-family: monospace;" id="art-renames"></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Zombie Directory</div>
+          <div style="margin-top:0.5rem; font-family: monospace;" id="art-zombie"></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Largest Commit</div>
+          <div style="margin-top:0.5rem; font-family: monospace; font-size: 0.8rem;" id="art-commit"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strata (Eras) Gallery -->
+    <div class="card">
+      <h2>Strata (Eras) Gallery</h2>
+      <p style="color: var(--muted); margin-bottom: 1.5rem;">The repository history partitioned into equal volumes of commits.</p>
+      <div class="era-timeline" id="eras-container"></div>
+    </div>
+
+    <!-- Hotspots -->
+    <div class="flex-row">
+      <div class="card flex-1">
+        <h2>Hotspots (by Churn)</h2>
+        <table id="table-churn">
+          <thead><tr><th>File</th><th>Churn (lines)</th><th>Top Author</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="card flex-1">
+        <h2>Curators Wing (Ownership)</h2>
+        <table id="table-ownership">
+          <thead><tr><th>File</th><th>Concentration</th><th>Top Curators</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Co-change Map -->
+    <div class="card">
+      <h2>Map Room (Co-change Clusters)</h2>
+      <p style="color: var(--muted)">Files that frequently change together in the same commit.</p>
+      <table id="table-cochange">
+        <thead><tr><th>File A</th><th>File B</th><th>Co-occurrences</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  let reportData = null;
+
+  async function loadData() {
+    try {
+      const res = await fetch('report.json');
+      reportData = await res.json();
+      render(reportData);
+    } catch (err) {
+      document.getElementById('loading').innerHTML = 'Failed to load report.json. Make sure you are serving this via a local server (e.g. npx serve).';
+      console.error(err);
+    }
+  }
+
+  function render(data) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    // Header
+    document.getElementById('repoName').textContent = data.repo.name;
+    document.getElementById('repoPath').textContent = data.repo.path;
+
+    // Summary
+    document.getElementById('s-commits').textContent = data.summary.commits.toLocaleString();
+    document.getElementById('s-authors').textContent = data.summary.authors.toLocaleString();
+    document.getElementById('s-files').textContent = data.summary.filesTouched.toLocaleString();
+    const d1 = data.summary.since ? data.summary.since.split('T')[0] : '?';
+    const d2 = data.summary.until ? data.summary.until.split('T')[0] : '?';
+    document.getElementById('s-time').textContent = `${d1} to ${d2}`;
+
+    document.getElementById('tourIntro').textContent = 
+      `Welcome to the exhibition of ${data.repo.name}. This collection spans from ${d1} to ${d2}, comprising ${data.summary.commits.toLocaleString()} commits by ${data.summary.authors} curators, shaping ${data.summary.filesTouched.toLocaleString()} artifacts.`;
+
+    // Artifacts
+    const art = data.artifacts;
+    if (art.oldestFile) document.getElementById('art-oldest').innerHTML = `${art.oldestFile.path}<br><span style="color:var(--muted);font-size:0.8rem;">Since ${art.oldestFile.firstSeen.split('T')[0]}</span>`;
+    if (art.mostRenamedFile) document.getElementById('art-renames').innerHTML = `${art.mostRenamedFile.path}<br><span style="color:var(--muted);font-size:0.8rem;">Renamed ${art.mostRenamedFile.renames} times</span>`;
+    if (art.zombieDir) document.getElementById('art-zombie').innerHTML = `${art.zombieDir.dir}<br><span style="color:var(--muted);font-size:0.8rem;">High churn, low recent activity</span>`;
+    if (art.largestCommit) document.getElementById('art-commit').innerHTML = `${art.largestCommit.sha.substring(0,7)}<br><span style="color:var(--muted);font-size:0.8rem;">${art.largestCommit.churn.toLocaleString()} lines changed</span>`;
+
+    // Eras
+    const erasHtml = data.eras.map(era => {
+      const keywords = era.keywords.map(k => `<span class="tag">${k.word}</span>`).join('');
+      const tops = era.topFiles.slice(0,3).map(f => `<li style="font-family:monospace;font-size:0.9rem">${f.path}</li>`).join('');
+      return `
+        <div class="era-card">
+          <div class="era-header">
+            <h3>Era ${era.index + 1}</h3>
+            <span style="color:var(--secondary)">${era.startDate.split('T')[0]} to ${era.endDate.split('T')[0]}</span>
+          </div>
+          <div style="margin-bottom: 1rem;">${keywords}</div>
+          <div style="color:var(--muted);font-size:0.9rem;">Top files shaped:</div>
+          <ul style="margin-top:0.5rem;padding-left:1.5rem;">${tops}</ul>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('eras-container').innerHTML = erasHtml;
+
+    // Hotspots Churn
+    const churnRows = data.hotspots.byChurn.slice(0, 10).map(h => `
+      <tr>
+        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${h.path}</td>
+        <td>${h.churn.toLocaleString()}</td>
+        <td>${h.topAuthor}</td>
+      </tr>
+    `).join('');
+    document.getElementById('table-churn').querySelector('tbody').innerHTML = churnRows;
+
+    // Ownership
+    const ownRows = data.ownership.slice(0, 10).map(o => {
+      const curators = o.topAuthors.map(a => `${a.author} (${a.pct}%)`).join(', ');
+      return `
+      <tr>
+        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${o.file}</td>
+        <td style="color:var(--primary);">${o.concentration}%</td>
+        <td style="font-size:0.9rem;">${curators}</td>
+      </tr>
+      `;
+    }).join('');
+    document.getElementById('table-ownership').querySelector('tbody').innerHTML = ownRows;
+
+    // Cochange
+    const ccRows = data.cochange.filePairs.slice(0, 15).map(cc => `
+      <tr>
+        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${cc.fileA}</td>
+        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${cc.fileB}</td>
+        <td style="text-align:center;">${cc.count}</td>
+      </tr>
+    `).join('');
+    document.getElementById('table-cochange').querySelector('tbody').innerHTML = ccRows;
+  }
+
+  window.copySummary = () => {
+    if (!reportData) return;
+    const txt = document.getElementById('tourIntro').textContent;
+    navigator.clipboard.writeText(txt).then(() => alert('Summary copied!'));
+  };
+
+  loadData();
+</script>
+</body>
+</html>

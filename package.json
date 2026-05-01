@@ -1,0 +1,26 @@
+{
+  "name": "repomuseum",
+  "version": "1.0.0",
+  "description": "A CLI tool that analyzes a local git repository and generates a beautiful single-page HTML museum tour report.",
+  "main": "dist/cli.js",
+  "bin": {
+    "repomuseum": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/cli.ts",
+    "start": "node dist/cli.js",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": ["git", "analysis", "report", "cli", "museum"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.2",
+    "ts-node": "^10.9.1"
+  }
+}
