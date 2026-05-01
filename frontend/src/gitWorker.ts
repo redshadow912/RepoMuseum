@@ -14,6 +14,7 @@ self.addEventListener('message', async (e) => {
   if (type === 'START') {
     try {
       const dir = '/repo';
+      console.log('Starting clone...');
       vol.reset();
       await fs.promises.mkdir(dir, { recursive: true });
 
@@ -26,7 +27,7 @@ self.addEventListener('message', async (e) => {
         corsProxy: 'https://cors.isomorphic-git.org',
         url,
         singleBranch: true,
-        depth: 500,
+        depth: 50,
         onProgress: (event) => {
           let percent = 0;
           if (event.total) {
@@ -40,9 +41,11 @@ self.addEventListener('message', async (e) => {
         }
       });
 
+      console.log('Clone complete');
       self.postMessage({ type: 'PROGRESS', phase: 'Analyzing commit strata...', progress: null });
+      console.log('Starting analysis...');
 
-      const log = await git.log({ fs, dir, depth: 500 });
+      const log = await git.log({ fs, dir, depth: 50 });
       const commits: CommitData[] = [];
 
       const flatten = (arr: any[]): any[] => arr.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
@@ -94,7 +97,9 @@ self.addEventListener('message', async (e) => {
         });
       }
 
+      console.log('Analysis complete');
       self.postMessage({ type: 'PROGRESS', phase: 'Building exhibits...', progress: null });
+      console.log('Starting exhibits build...');
 
       // Identify tracked files at HEAD
       const trackedFilesTree = await git.walk({
@@ -117,10 +122,12 @@ self.addEventListener('message', async (e) => {
         numEras: 6
       });
 
+      console.log('Exhibits build complete');
       self.postMessage({ type: 'DONE', payload: reportData });
 
     } catch (err: any) {
-      self.postMessage({ type: 'ERROR', error: err.message });
+      console.error('Worker failed:', err);
+      self.postMessage({ type: 'ERROR', message: err.message, stack: err.stack });
     }
   }
 });

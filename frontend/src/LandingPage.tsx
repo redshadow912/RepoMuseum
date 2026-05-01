@@ -7,9 +7,10 @@ import React, { useState, useRef, useEffect } from 'react';
  */
 
 export default function LandingPage() {
-  const [phase, setPhase] = useState<'FOYER' | 'LOADING' | 'MUSEUM'>('FOYER');
+  const [phase, setPhase] = useState<'FOYER' | 'LOADING' | 'MUSEUM' | 'ERROR'>('FOYER');
   const [url, setUrl] = useState('');
   const [loadingText, setLoadingText] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function LandingPage() {
     workerRef.current = new Worker(new URL('./gitWorker.ts', import.meta.url), { type: 'module' });
     
     workerRef.current.onmessage = (e) => {
-      const { type, phase: msgPhase, payload, error } = e.data;
+      const { type, phase: msgPhase, payload, message } = e.data;
       
       if (type === 'PROGRESS') {
         setLoadingText(msgPhase);
@@ -31,7 +32,8 @@ export default function LandingPage() {
           }, 500); 
         }
       } else if (type === 'ERROR') {
-        setLoadingText(`Exhibition Failed: ${error}`);
+        setPhase('ERROR');
+        setErrorMsg(message || 'An unknown error occurred.');
       }
     };
 
@@ -43,6 +45,7 @@ export default function LandingPage() {
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
+    setErrorMsg('');
     setPhase('LOADING');
     setLoadingText('Awakening the curator...');
     workerRef.current?.postMessage({ type: 'START', url });
@@ -117,6 +120,22 @@ export default function LandingPage() {
                 <span className="material-symbols-outlined animate-spin" style={{ fontSize: '48px' }}>hourglass_empty</span>
                 <p className="font-code-sm text-code-sm italic text-xl mt-4">{loadingText}</p>
                 <p className="font-label-sm text-label-sm text-outline-variant uppercase tracking-widest mt-2">Zero-backend execution • Browser memory only</p>
+             </div>
+          </section>
+        )}
+
+        {phase === 'ERROR' && (
+          <section className="w-full max-w-3xl flex flex-col items-center text-center mt-20 mb-32 relative animate-[fadeIn_1s_ease-in]">
+             <div className="w-full p-8 border border-red-900/50 bg-red-950/20 backdrop-blur-md text-red-200">
+                <span className="material-symbols-outlined text-red-500 mb-4" style={{ fontSize: '48px' }}>error</span>
+                <h2 className="font-display-xl text-3xl mb-4" style={{ fontFamily: '"Newsreader", serif' }}>Exhibition Failed</h2>
+                <p className="font-code-sm text-code-sm text-red-300/80 mb-8 whitespace-pre-wrap">{errorMsg}</p>
+                <button 
+                  onClick={() => setPhase('FOYER')} 
+                  className="font-label-sm text-label-sm uppercase bg-red-900/40 text-red-200 px-8 py-3 tracking-widest hover:bg-red-900/60 transition-colors border border-red-900/50"
+                >
+                  Try Again
+                </button>
              </div>
           </section>
         )}
