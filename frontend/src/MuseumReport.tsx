@@ -7,7 +7,7 @@ interface MuseumReportProps {
 
 export default function MuseumReport({ data }: MuseumReportProps) {
   return (
-    <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 opacity-0 animate-[fadeIn_1s_ease-in_forwards]">
+    <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 bg-background">
       {/* TopAppBar */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 shadow-none bg-black/80 backdrop-blur-md flex justify-between items-center px-12 py-6 max-w-[1400px] mx-auto ml-64" style={{ width: 'calc(100% - 16rem)' }}>
         <div className="flex items-center gap-8">
@@ -53,18 +53,18 @@ export default function MuseumReport({ data }: MuseumReportProps) {
               <div className="text-left">
                 <p className="font-label-sm text-xs text-outline tracking-widest uppercase mb-2">Exhibit 01</p>
                 <h1 className="font-display-xl text-5xl md:text-6xl text-on-surface mb-4" style={{ fontFamily: '"Newsreader", serif' }}>
-                  {data.repo.name}
+                  {data?.repo?.name || 'Unknown Repository'}
                 </h1>
                 <p className="font-code-sm text-sm text-on-surface-variant opacity-80 font-mono">
-                  {data.summary.since ? data.summary.since.split('T')[0] : 'Dawn'} — {data.summary.until.split('T')[0]}
+                  {data?.summary?.since ? data.summary.since.split('T')[0] : 'Dawn'} — {data?.summary?.until ? data.summary.until.split('T')[0] : 'Present'}
                 </p>
               </div>
             </div>
             
             <div className="max-w-2xl mx-auto mb-16">
               <p className="font-headline-lg text-2xl italic text-primary-container leading-relaxed" style={{ fontFamily: '"Newsreader", serif' }}>
-                {data.artifacts.largestCommit 
-                  ? `"A masterful descent into brilliant chaos. On ${data.artifacts.largestCommit.date.split('T')[0]}, ${data.artifacts.largestCommit.author} forged the monumental '${data.artifacts.largestCommit.subject}', cementing their legacy."`
+                {data?.artifacts?.largestCommit 
+                  ? `"A masterful descent into brilliant chaos. On ${data.artifacts.largestCommit.date ? data.artifacts.largestCommit.date.split('T')[0] : 'an unknown date'}, ${data.artifacts.largestCommit.author || 'an unknown author'} forged the monumental '${data.artifacts.largestCommit.subject || 'commit'}', cementing their legacy."`
                   : `"An archival journey revealing an era where engineering bravado met rigid constraints."`}
               </p>
               <p className="mt-4 font-label-sm text-xs text-outline tracking-widest uppercase">— The Curator</p>
@@ -72,19 +72,19 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             
             <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/10 pt-12">
               <div className="flex flex-col items-center">
-                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data.summary.commits}</span>
+                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.summary?.commits || 0}</span>
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest">Commits</span>
               </div>
               <div className="flex flex-col items-center">
-                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data.summary.authors}</span>
+                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.summary?.authors || 0}</span>
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest">Curators</span>
               </div>
               <div className="flex flex-col items-center">
-                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data.summary.filesTouched}</span>
+                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.summary?.filesTouched || 0}</span>
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest">Artifacts</span>
               </div>
               <div className="flex flex-col items-center">
-                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data.eras.length}</span>
+                <span className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.eras?.length || 0}</span>
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest">Eras</span>
               </div>
             </div>
@@ -103,14 +103,14 @@ export default function MuseumReport({ data }: MuseumReportProps) {
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest w-2/3">Artifact Path</span>
                 <span className="font-label-sm text-xs text-outline uppercase tracking-widest w-1/3 text-right">Friction Index (Churn)</span>
               </div>
-              {data.hotspots.byChurn.slice(0, 10).map((file, idx) => (
+              {data?.hotspots?.byChurn?.slice(0, 10).map((file, idx) => (
                 <div key={file.path} className="flex justify-between items-center py-4 border-b border-white/5 hover:bg-white/5 transition-colors">
                   <div className="flex items-center gap-4 w-2/3">
                     <span className="font-label-sm text-[10px] text-outline opacity-50 w-6">{(idx + 1).toString().padStart(2, '0')}</span>
-                    <span className="font-code-sm text-sm text-on-surface-variant truncate font-mono">{file.path}</span>
+                    <span className="font-code-sm text-sm text-on-surface-variant truncate font-mono">{file?.path}</span>
                   </div>
                   <div className="w-1/3 text-right">
-                    <span className="font-code-sm text-sm text-primary-container font-mono">{file.churn}</span>
+                    <span className="font-code-sm text-sm text-primary-container font-mono">{file?.churn}</span>
                   </div>
                 </div>
               ))}

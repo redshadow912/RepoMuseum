@@ -59,7 +59,7 @@ export default function LandingPage() {
         </div>
       )}
 
-      <div className={`flex flex-col min-h-screen transition-opacity duration-1000 relative z-10 ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100 bg-background'}`}>
+      <div className={`flex flex-col min-h-screen transition-opacity duration-1000 relative z-10 bg-background ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         
         {/* Top NavBar from Stitch Design */}
       <nav className="fixed top-0 w-full z-50 border-b border-stone-800 bg-black/90 backdrop-blur-md" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
