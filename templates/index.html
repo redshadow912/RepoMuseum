@@ -185,16 +185,15 @@
 </div>
 
 <script>
-  let reportData = null;
+  // This will be replaced by render.ts with the actual JSON object
+  const embeddedData = /*__REPORT_DATA__*/ null;
 
   async function loadData() {
-    try {
-      const res = await fetch('report.json');
-      reportData = await res.json();
+    if (embeddedData) {
+      reportData = embeddedData;
       render(reportData);
-    } catch (err) {
-      document.getElementById('loading').innerHTML = 'Failed to load report.json. Make sure you are serving this via a local server (e.g. npx serve).';
-      console.error(err);
+    } else {
+      document.getElementById('loading').innerHTML = 'No report data found. Please regenerate the report.';
     }
   }
 

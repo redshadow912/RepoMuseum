@@ -48,14 +48,15 @@ function renderReport(reportDir, data) {
     // Write JSON data
     const jsonPath = path.join(reportDir, "report.json");
     fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), "utf8");
-    // Copy HTML template
-    // We resolve relative to where this script is running from
+    // Read HTML template and inject JSON data
     const templatePath = path.join(__dirname, "..", "templates", "index.html");
     if (!fs.existsSync(templatePath)) {
         throw new Error(`Cannot find HTML template at ${templatePath}`);
     }
+    let htmlContent = fs.readFileSync(templatePath, "utf8");
+    htmlContent = htmlContent.replace("/*__REPORT_DATA__*/ null", JSON.stringify(data));
     const outHtmlPath = path.join(reportDir, "index.html");
-    fs.copyFileSync(templatePath, outHtmlPath);
+    fs.writeFileSync(outHtmlPath, htmlContent, "utf8");
     return { outHtmlPath, jsonPath };
 }
 //# sourceMappingURL=render.js.map

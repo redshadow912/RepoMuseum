@@ -1,0 +1,5 @@
+node_modules/
+dist/
+repomuseum-report/
+.env
+.DS_Store
