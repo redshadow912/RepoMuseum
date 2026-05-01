@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import MuseumReport from './MuseumReport';
+import { ReportData } from '../../src/types';
 
 /**
  * LandingPage.tsx
@@ -11,6 +13,7 @@ export default function LandingPage() {
   const [url, setUrl] = useState('');
   const [loadingText, setLoadingText] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [reportData, setReportData] = useState<ReportData | null>(null);
   const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
@@ -23,14 +26,8 @@ export default function LandingPage() {
       if (type === 'PROGRESS') {
         setLoadingText(msgPhase);
       } else if (type === 'DONE') {
-        (window as any).REPO_DATA = payload;
+        setReportData(payload);
         setPhase('MUSEUM');
-        
-        if (typeof (window as any).render === 'function') {
-          setTimeout(() => {
-            (window as any).render(payload);
-          }, 500); 
-        }
       } else if (type === 'ERROR') {
         setPhase('ERROR');
         setErrorMsg(message || 'An unknown error occurred.');
@@ -55,9 +52,16 @@ export default function LandingPage() {
   // to run for 1000ms as it fades to black before the Museum UI takes over.
 
   return (
-    <div className={`flex flex-col min-h-screen transition-opacity duration-1000 ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-      
-      {/* Top NavBar from Stitch Design */}
+    <>
+      {phase === 'MUSEUM' && reportData && (
+        <div className="absolute inset-0 z-0">
+          <MuseumReport data={reportData} />
+        </div>
+      )}
+
+      <div className={`flex flex-col min-h-screen transition-opacity duration-1000 relative z-10 ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100 bg-background'}`}>
+        
+        {/* Top NavBar from Stitch Design */}
       <nav className="fixed top-0 w-full z-50 border-b border-stone-800 bg-black/90 backdrop-blur-md" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="flex justify-between items-center px-10 py-6 max-w-[1100px] mx-auto w-full">
           <div className="font-serif italic text-2xl text-primary-container tracking-widest">
