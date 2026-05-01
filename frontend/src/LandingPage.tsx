@@ -48,12 +48,11 @@ export default function LandingPage() {
     workerRef.current?.postMessage({ type: 'START', url });
   };
 
-  if (phase === 'MUSEUM') {
-    return null; // The Vanilla Museum UI takes over
-  }
+  // We do not return null early here, because we want the fade-out transition 
+  // to run for 1000ms as it fades to black before the Museum UI takes over.
 
   return (
-    <div className={`flex flex-col min-h-screen transition-opacity duration-1000 ${phase === 'MUSEUM' ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`flex flex-col min-h-screen transition-opacity duration-1000 ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       
       {/* Top NavBar from Stitch Design */}
       <nav className="fixed top-0 w-full z-50 border-b border-stone-800 bg-black/90 backdrop-blur-md" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>

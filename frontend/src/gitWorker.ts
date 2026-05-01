@@ -2,7 +2,8 @@
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/web';
 import { Volume, createFsFromVolume } from 'memfs';
-import { buildReport, CommitData } from '../../src/analyze'; // Assuming shared logic
+import { buildReport } from '../../src/analyze';
+import { CommitData } from '../../src/types'; // Assuming shared logic
 
 const vol = new Volume();
 const fs = createFsFromVolume(vol) as any;

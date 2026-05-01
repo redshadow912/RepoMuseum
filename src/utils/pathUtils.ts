@@ -4,8 +4,6 @@
  * and handling git rename path syntax.
  */
 
-import * as path from "path";
-
 /**
  * Normalize a file path to use forward slashes and remove leading ./
  */
@@ -29,8 +27,9 @@ export function topDir(filePath: string): string {
  */
 export function parentDir(filePath: string): string {
   const normalized = normalizePath(filePath);
-  const dir = path.posix.dirname(normalized);
-  return dir === "." || dir === "" ? "." : dir;
+  const lastSlash = normalized.lastIndexOf('/');
+  if (lastSlash <= 0) return '.';
+  return normalized.substring(0, lastSlash);
 }
 
 /**
