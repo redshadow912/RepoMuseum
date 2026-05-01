@@ -12,15 +12,23 @@
     "start": "node dist/cli.js",
     "lint": "eslint src/**/*.ts"
   },
-  "keywords": ["git", "analysis", "report", "cli", "museum"],
+  "keywords": [
+    "git",
+    "analysis",
+    "report",
+    "cli",
+    "museum"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "ora": "^5.4.1",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.2",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
   }
 }

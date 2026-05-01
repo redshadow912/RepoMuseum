@@ -8,16 +8,13 @@ import * as path from "path";
 import { ReportData } from "./types";
 
 export function renderReport(reportDir: string, data: ReportData) {
-  // Ensure output dir exists
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true });
   }
 
-  // Write JSON data
   const jsonPath = path.join(reportDir, "report.json");
   fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), "utf8");
 
-  // Read HTML template and inject JSON data
   const templatePath = path.join(__dirname, "..", "templates", "index.html");
   if (!fs.existsSync(templatePath)) {
     throw new Error(`Cannot find HTML template at ${templatePath}`);

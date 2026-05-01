@@ -8,15 +8,15 @@
 
 import { Command } from "commander";
 import * as path from "path";
-import * as fs from "fs";
 import { execSync } from "child_process";
+import ora from "ora";
+import pc from "picocolors";
 
 import {
   checkGitInstalled,
   checkIsGitRepo,
-  listCommits,
+  fetchGitHistoryStream,
   listTrackedFiles,
-  fetchAllCommitData,
 } from "./git";
 import { buildReport } from "./analyze";
 import { renderReport } from "./render";
@@ -38,40 +38,44 @@ program
   .option("--eras <n>", "Number of eras to partition history into", parseInt, 6)
   .option("--include-merges", "Include merge commits", false)
   .option("--open", "Try to open the HTML report automatically after generation", false)
-  .action((repoPath, options) => {
-    try {
-      console.log(`🏛️ Welcome to RepoMuseum.`);
-      console.log(`Checking environment...`);
+  .action(async (repoPath, options) => {
+    console.log();
+    console.log(pc.bold(pc.yellow("  🏛️  Welcome to RepoMuseum ")));
+    console.log(pc.gray("  Curating your codebase history..."));
+    console.log();
 
+    const spinner = ora("Checking environment...").start();
+
+    try {
       const gitVersion = checkGitInstalled();
       const resolvedRepoPath = path.resolve(repoPath);
       checkIsGitRepo(resolvedRepoPath);
 
       const repoName = path.basename(resolvedRepoPath) || "repository";
-      console.log(`Analyzing repository: ${repoName} (${resolvedRepoPath})`);
-
-      // 1. Get raw commits
-      console.log(`Fetching commit list...`);
-      const rawCommits = listCommits(resolvedRepoPath, {
+      
+      // 1. Fetch all commit data in a single stream
+      spinner.text = `Dusting off git history for ${pc.cyan(repoName)}...`;
+      
+      const commitData = await fetchGitHistoryStream(resolvedRepoPath, {
         since: options.since,
         maxCommits: options.maxCommits,
         includeMerges: options.includeMerges,
+        onProgress: (count) => {
+          spinner.text = `Dusting off git history... ${pc.yellow(count.toLocaleString())} commits discovered`;
+        }
       });
 
-      if (rawCommits.length === 0) {
-        console.error("No commits found matching the criteria. Try a different --since date or check the repo.");
+      if (commitData.length === 0) {
+        spinner.fail(pc.red("No commits found matching the criteria."));
         process.exit(1);
       }
-      console.log(`Found ${rawCommits.length} commits. Extracting detailed file changes...`);
-
-      // 2. Fetch detailed stats for all commits
-      const commitData = fetchAllCommitData(resolvedRepoPath, rawCommits, { progressEvery: 50 });
-
-      // 3. Tracked files
+      
+      // 2. Tracked files
+      spinner.text = "Cataloging current artifacts (tracked files)...";
       const trackedFiles = listTrackedFiles(resolvedRepoPath);
 
-      // 4. Analysis
-      console.log(`Building museum exhibits (analysis)...`);
+      // 3. Analysis
+      spinner.text = "Analyzing strata and building exhibits...";
       const reportData = buildReport(commitData, trackedFiles, {
         repoName,
         repoPath: resolvedRepoPath,
@@ -80,28 +84,32 @@ program
         numEras: options.eras,
       });
 
-      // 5. Render HTML
+      // 4. Render HTML
+      spinner.text = "Painting the exhibits (rendering HTML)...";
       const outDir = path.resolve(options.out);
-      console.log(`Writing report to ${outDir}...`);
       const { outHtmlPath } = renderReport(outDir, reportData);
 
-      console.log(`\n🎉 Tour ready!`);
-      console.log(`Report stats:`);
-      console.log(` - Commits analyzed: ${reportData.summary.commits}`);
-      console.log(` - Authors: ${reportData.summary.authors}`);
-      console.log(` - Files Touched: ${reportData.summary.filesTouched}`);
-      
-      console.log(`\nOpen the report here:`);
-      console.log(`file://${outHtmlPath}`);
+      spinner.succeed(pc.green("Exhibition built successfully!"));
+
+      // Print Summary Box
+      console.log();
+      console.log(pc.bgWhite(pc.black(" SUMMARY ")));
+      console.log(`  ${pc.bold("Repository:")}  ${pc.cyan(repoName)}`);
+      console.log(`  ${pc.bold("Commits:")}     ${pc.yellow(reportData.summary.commits.toLocaleString())}`);
+      console.log(`  ${pc.bold("Curators:")}    ${pc.magenta(reportData.summary.authors.toLocaleString())}`);
+      console.log(`  ${pc.bold("Artifacts:")}   ${pc.blue(reportData.summary.filesTouched.toLocaleString())}`);
+      console.log();
+      console.log(`${pc.bold("🎟️  Your ticket:")} ${pc.underline(pc.cyan(`file://${outHtmlPath}`))}`);
+      console.log();
 
       if (options.open) {
         openBrowser(outHtmlPath);
       } else {
-        console.log(`\nTip: You can use the --open flag next time to auto-open the browser.`);
+        console.log(pc.gray(`  Tip: Use the ${pc.bold("--open")} flag next time to auto-open the browser.`));
       }
 
     } catch (error: any) {
-      console.error(`\n❌ Error: ${error.message}`);
+      spinner.fail(pc.red(`Error: ${error.message}`));
       process.exit(1);
     }
   });
@@ -120,10 +128,10 @@ function openBrowser(filePath: string) {
       break;
   }
   try {
-    console.log(`Opening browser...`);
+    ora("Opening museum doors...").start().succeed();
     execSync(command);
   } catch (err) {
-    console.error(`Failed to open browser automatically. Please open the file manually.`);
+    console.error(pc.red(`Failed to open browser automatically. Please open the file manually.`));
   }
 }
 

@@ -3,285 +3,465 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RepoMuseum Tour</title>
+  <title>RepoMuseum Exhibition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #121212;
-      --surface: #1e1e1e;
-      --text: #e0e0e0;
-      --primary: #bb86fc;
-      --secondary: #03dac6;
-      --border: #333;
-      --muted: #888;
+      --bg: #0f0f0f;
+      --surface: #181818;
+      --surface-elevated: #222222;
+      --text-main: #e8e8e8;
+      --text-muted: #999999;
+      --accent: #d4af37; /* Museum gold/bronze */
+      --border: #333333;
+      --plaque-bg: #111111;
+      
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
       margin: 0;
       padding: 0;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      font-weight: 300;
     }
-    .container {
-      max-width: 1000px;
+
+    /* Museum layout */
+    .museum-container {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 3rem 1.5rem;
     }
-    h1, h2, h3 { color: #fff; margin-top: 2rem; }
-    h1 { font-size: 2.5rem; text-align: center; margin-bottom: 0.5rem; color: var(--primary); }
-    .subtitle { text-align: center; color: var(--muted); margin-bottom: 3rem; }
-    
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+
+    h1, h2, h3, h4, h5 {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      margin-top: 0;
+      color: var(--text-main);
     }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .stat-box {
-      text-align: center;
+
+    /* Hero Plaque (Twitter crop ready) */
+    .hero-plaque-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 4rem;
       padding: 1rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 4px;
     }
-    .stat-value { font-size: 2rem; font-weight: bold; color: var(--secondary); }
-    .stat-label { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    
-    .era-timeline {
+
+    .hero-plaque {
+      background: var(--plaque-bg);
+      border: 2px solid var(--accent);
+      padding: 3rem 4rem;
+      text-align: center;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 40px rgba(212, 175, 55, 0.05);
+      position: relative;
+    }
+
+    .hero-plaque::before {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px; right: 6px; bottom: 6px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      pointer-events: none;
+    }
+
+    .plaque-title {
+      font-size: 3.5rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .plaque-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .plaque-roast {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+    }
+
+    .plaque-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
+    }
+
+    .p-stat {
       display: flex;
       flex-direction: column;
+    }
+
+    .p-stat-val { font-family: var(--font-serif); font-size: 1.8rem; color: var(--text-main); }
+    .p-stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); }
+
+    /* Editorial Grid */
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.3;
+    }
+
+    .col-full { grid-column: 1 / -1; }
+    .col-half { grid-column: span 6; }
+    .col-third { grid-column: span 4; }
+
+    @media (max-width: 900px) {
+      .col-half, .col-third { grid-column: 1 / -1; }
+      .plaque-stats { flex-wrap: wrap; gap: 1.5rem; }
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Typography / Utilities */
+    .mono { font-family: var(--font-mono); font-size: 0.85rem; }
+    .muted { color: var(--text-muted); }
+    .text-right { text-align: right; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    td { padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tr:last-child td { border-bottom: none; }
+
+    /* Tags */
+    .keyword-tag {
+      display: inline-block;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Era Timeline */
+    .era-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
     }
     .era-card {
-      border-left: 4px solid var(--primary);
-      padding-left: 1rem;
-      background: var(--surface);
-      padding: 1rem;
-      border-radius: 0 8px 8px 0;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
     }
-    .era-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: normal; font-size: 0.9rem; }
-    
-    .flex-row { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .flex-1 { flex: 1; min-width: 300px; }
-    
-    .tag {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      background: rgba(187, 134, 252, 0.15);
-      color: var(--primary);
-      border-radius: 12px;
-      font-size: 0.8rem;
-      margin: 0.2rem;
+    .era-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 1rem;
     }
-    .btn {
-      background: var(--primary);
-      color: #000;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      display: block;
-      margin: 2rem auto;
-    }
-    .btn:hover { opacity: 0.9; }
+    .era-num { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent); }
 
-    #loading { text-align: center; padding: 5rem; font-size: 1.2rem; color: var(--muted); }
-    #content { display: none; }
+    /* Artifact Highlights */
+    .artifact-box { margin-bottom: 1.5rem; }
+    .artifact-label { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; margin-bottom: 0.2rem; }
+    .artifact-val { font-size: 1.1rem; }
+
+    .btn-share {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: all 0.2s;
+    }
+    .btn-share:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div id="loading">Loading exhibition...</div>
-  <div id="content">
-    <!-- Welcome Hall -->
-    <header>
-      <h1 id="repoName"></h1>
-      <div class="subtitle" id="repoPath"></div>
+<div class="museum-container" id="museum" style="display: none;">
+  <!-- Plaque (Hero) -->
+  <div class="hero-plaque-wrapper">
+    <div class="hero-plaque">
+      <h1 class="plaque-title" id="repoName"></h1>
+      <div class="plaque-subtitle" id="repoPath"></div>
       
-      <div class="card">
-        <h2>Welcome Hall</h2>
-        <div class="stats-grid">
-          <div class="stat-box"><div class="stat-value" id="s-commits"></div><div class="stat-label">Commits</div></div>
-          <div class="stat-box"><div class="stat-value" id="s-authors"></div><div class="stat-label">Authors</div></div>
-          <div class="stat-box"><div class="stat-value" id="s-files"></div><div class="stat-label">Files Touched</div></div>
-          <div class="stat-box"><div class="stat-value" id="s-time"></div><div class="stat-label">Timeline</div></div>
+      <p class="plaque-roast" id="plaqueRoast"></p>
+      
+      <div class="plaque-stats">
+        <div class="p-stat">
+          <span class="p-stat-val" id="st-commits"></span>
+          <span class="p-stat-label">Commits</span>
         </div>
-        <p id="tourIntro" style="font-style: italic; color: var(--muted); text-align: center;"></p>
-        <button class="btn" onclick="copySummary()">Copy Tour Summary</button>
-      </div>
-    </header>
-
-    <!-- Artifacts & Oddities -->
-    <div class="card">
-      <h2>Artifacts & Oddities</h2>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-label">Oldest Active File</div>
-          <div style="margin-top:0.5rem; font-family: monospace;" id="art-oldest"></div>
+        <div class="p-stat">
+          <span class="p-stat-val" id="st-authors"></span>
+          <span class="p-stat-label">Curators</span>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Most Renamed File</div>
-          <div style="margin-top:0.5rem; font-family: monospace;" id="art-renames"></div>
+        <div class="p-stat">
+          <span class="p-stat-val" id="st-files"></span>
+          <span class="p-stat-label">Artifacts</span>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Zombie Directory</div>
-          <div style="margin-top:0.5rem; font-family: monospace;" id="art-zombie"></div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Largest Commit</div>
-          <div style="margin-top:0.5rem; font-family: monospace; font-size: 0.8rem;" id="art-commit"></div>
+        <div class="p-stat">
+          <span class="p-stat-val" id="st-eras"></span>
+          <span class="p-stat-label">Eras</span>
         </div>
       </div>
+      <button class="btn-share" onclick="copyPlaque()">Copy Plaque Quote</button>
     </div>
+  </div>
 
-    <!-- Strata (Eras) Gallery -->
-    <div class="card">
-      <h2>Strata (Eras) Gallery</h2>
-      <p style="color: var(--muted); margin-bottom: 1.5rem;">The repository history partitioned into equal volumes of commits.</p>
-      <div class="era-timeline" id="eras-container"></div>
-    </div>
-
-    <!-- Hotspots -->
-    <div class="flex-row">
-      <div class="card flex-1">
-        <h2>Hotspots (by Churn)</h2>
+  <div class="editorial-grid">
+    
+    <!-- Left Column: Hotspots & Map -->
+    <div class="col-half editorial-grid" style="display: flex; flex-direction: column; gap: 2rem;">
+      <div class="section-card">
+        <h2 class="section-title">The Crucible (Hotspots)</h2>
+        <p class="muted" style="font-size:0.9rem; margin-top:-1rem; margin-bottom: 1.5rem;">The anvils where code was hammered the most.</p>
         <table id="table-churn">
-          <thead><tr><th>File</th><th>Churn (lines)</th><th>Top Author</th></tr></thead>
+          <thead><tr><th>File</th><th class="text-right">Churn</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
-      <div class="card flex-1">
-        <h2>Curators Wing (Ownership)</h2>
-        <table id="table-ownership">
-          <thead><tr><th>File</th><th>Concentration</th><th>Top Curators</th></tr></thead>
+
+      <div class="section-card">
+        <h2 class="section-title">Map Room (Co-change)</h2>
+        <p class="muted" style="font-size:0.9rem; margin-top:-1rem; margin-bottom: 1.5rem;">Artifacts that are historically intertwined.</p>
+        <table id="table-cochange">
+          <thead><tr><th>File A</th><th>File B</th><th class="text-right">Bonds</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Co-change Map -->
-    <div class="card">
-      <h2>Map Room (Co-change Clusters)</h2>
-      <p style="color: var(--muted)">Files that frequently change together in the same commit.</p>
-      <table id="table-cochange">
-        <thead><tr><th>File A</th><th>File B</th><th>Co-occurrences</th></tr></thead>
-        <tbody></tbody>
-      </table>
+    <!-- Right Column: Oddities & Ownership -->
+    <div class="col-half editorial-grid" style="display: flex; flex-direction: column; gap: 2rem;">
+      <div class="section-card">
+        <h2 class="section-title">Curiosities & Oddities</h2>
+        
+        <div class="artifact-box">
+          <div class="artifact-label">The Eldest Relic</div>
+          <div class="artifact-val mono" id="art-oldest"></div>
+          <div class="muted" style="font-size:0.8rem;" id="art-oldest-sub"></div>
+        </div>
+
+        <div class="artifact-box">
+          <div class="artifact-label">The Shapeshifter</div>
+          <div class="artifact-val mono" id="art-renames"></div>
+          <div class="muted" style="font-size:0.8rem;" id="art-renames-sub"></div>
+        </div>
+
+        <div class="artifact-box">
+          <div class="artifact-label">The Zombie Module</div>
+          <div class="artifact-val mono" id="art-zombie"></div>
+          <div class="muted" style="font-size:0.8rem;" id="art-zombie-sub"></div>
+        </div>
+
+        <div class="artifact-box">
+          <div class="artifact-label">The Monolith (Largest Commit)</div>
+          <div class="artifact-val mono" id="art-commit"></div>
+          <div class="muted" style="font-size:0.8rem;" id="art-commit-sub"></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2 class="section-title">Curators Wing (Ownership)</h2>
+        <p class="muted" style="font-size:0.9rem; margin-top:-1rem; margin-bottom: 1.5rem;">Those who dominate the hottest files.</p>
+        <table id="table-ownership">
+          <thead><tr><th>File</th><th>Top Curator</th><th class="text-right">Grip</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Full Width: Eras -->
+    <div class="col-full section-card">
+      <h2 class="section-title" style="text-align: center; border:none;">Strata of History</h2>
+      <p class="muted" style="text-align: center; margin-top:-1.5rem; margin-bottom: 2rem;">The repository timeline, partitioned equally by commit volume.</p>
+      
+      <div class="era-grid" id="eras-container"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // This will be replaced by render.ts with the actual JSON object
-  const embeddedData = /*__REPORT_DATA__*/ null;
+  window.REPO_DATA = /*__REPORT_DATA__*/ null;
 
-  async function loadData() {
-    if (embeddedData) {
-      reportData = embeddedData;
-      render(reportData);
-    } else {
-      document.getElementById('loading').innerHTML = 'No report data found. Please regenerate the report.';
+  function generateRoast(data) {
+    const { commits, authors, filesTouched } = data.summary;
+    const avgCommits = commits / (authors || 1);
+    
+    if (authors === 1 && commits > 500) {
+      return `A solitary artist's descent into madness. One human, ${commits.toLocaleString()} brushstrokes, speaking entirely to an empty room.`;
     }
+    if (authors === 1) {
+      return `A private journal of code. Quiet, unbothered, and entirely governed by a single mastermind.`;
+    }
+    if (commits > 10000 && authors > 10) {
+      return `A chaotic metropolis built by ${authors} architects, constantly bulldozing and rebuilding across ${commits.toLocaleString()} historical events.`;
+    }
+    if (filesTouched < 50 && commits > 500) {
+      return `Obsessive perfectionism. ${commits.toLocaleString()} revisions poured into a microscopic footprint of merely ${filesTouched} files.`;
+    }
+    if (avgCommits < 5) {
+      return `A transient bus stop. ${authors} developers walked in, changed a few things, and vanished into the night.`;
+    }
+    
+    return `An intricate tapestry woven by ${authors} curators over ${commits.toLocaleString()} distinct events, shaping the ${filesTouched} artifacts before you.`;
   }
 
   function render(data) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+    document.getElementById('museum').style.display = 'block';
 
-    // Header
+    // Hero
     document.getElementById('repoName').textContent = data.repo.name;
-    document.getElementById('repoPath').textContent = data.repo.path;
+    const d1 = data.summary.since ? data.summary.since.split('T')[0] : 'Origin';
+    const d2 = data.summary.until ? data.summary.until.split('T')[0] : 'Present';
+    document.getElementById('repoPath').textContent = `${data.repo.path} • [ ${d1} — ${d2} ]`;
+    
+    document.getElementById('st-commits').textContent = data.summary.commits.toLocaleString();
+    document.getElementById('st-authors').textContent = data.summary.authors.toLocaleString();
+    document.getElementById('st-files').textContent = data.summary.filesTouched.toLocaleString();
+    document.getElementById('st-eras').textContent = data.eras.length;
 
-    // Summary
-    document.getElementById('s-commits').textContent = data.summary.commits.toLocaleString();
-    document.getElementById('s-authors').textContent = data.summary.authors.toLocaleString();
-    document.getElementById('s-files').textContent = data.summary.filesTouched.toLocaleString();
-    const d1 = data.summary.since ? data.summary.since.split('T')[0] : '?';
-    const d2 = data.summary.until ? data.summary.until.split('T')[0] : '?';
-    document.getElementById('s-time').textContent = `${d1} to ${d2}`;
+    const roast = generateRoast(data);
+    document.getElementById('plaqueRoast').textContent = `"${roast}"`;
 
-    document.getElementById('tourIntro').textContent = 
-      `Welcome to the exhibition of ${data.repo.name}. This collection spans from ${d1} to ${d2}, comprising ${data.summary.commits.toLocaleString()} commits by ${data.summary.authors} curators, shaping ${data.summary.filesTouched.toLocaleString()} artifacts.`;
-
-    // Artifacts
+    // Curiosities
     const art = data.artifacts;
-    if (art.oldestFile) document.getElementById('art-oldest').innerHTML = `${art.oldestFile.path}<br><span style="color:var(--muted);font-size:0.8rem;">Since ${art.oldestFile.firstSeen.split('T')[0]}</span>`;
-    if (art.mostRenamedFile) document.getElementById('art-renames').innerHTML = `${art.mostRenamedFile.path}<br><span style="color:var(--muted);font-size:0.8rem;">Renamed ${art.mostRenamedFile.renames} times</span>`;
-    if (art.zombieDir) document.getElementById('art-zombie').innerHTML = `${art.zombieDir.dir}<br><span style="color:var(--muted);font-size:0.8rem;">High churn, low recent activity</span>`;
-    if (art.largestCommit) document.getElementById('art-commit').innerHTML = `${art.largestCommit.sha.substring(0,7)}<br><span style="color:var(--muted);font-size:0.8rem;">${art.largestCommit.churn.toLocaleString()} lines changed</span>`;
+    if (art.oldestFile) {
+      document.getElementById('art-oldest').textContent = art.oldestFile.path;
+      document.getElementById('art-oldest-sub').textContent = `Untouched or lingering since ${art.oldestFile.firstSeen.split('T')[0]}`;
+    } else {
+      document.getElementById('art-oldest').textContent = "None";
+    }
 
-    // Eras
-    const erasHtml = data.eras.map(era => {
-      const keywords = era.keywords.map(k => `<span class="tag">${k.word}</span>`).join('');
-      const tops = era.topFiles.slice(0,3).map(f => `<li style="font-family:monospace;font-size:0.9rem">${f.path}</li>`).join('');
-      return `
-        <div class="era-card">
-          <div class="era-header">
-            <h3>Era ${era.index + 1}</h3>
-            <span style="color:var(--secondary)">${era.startDate.split('T')[0]} to ${era.endDate.split('T')[0]}</span>
-          </div>
-          <div style="margin-bottom: 1rem;">${keywords}</div>
-          <div style="color:var(--muted);font-size:0.9rem;">Top files shaped:</div>
-          <ul style="margin-top:0.5rem;padding-left:1.5rem;">${tops}</ul>
-        </div>
-      `;
-    }).join('');
-    document.getElementById('eras-container').innerHTML = erasHtml;
+    if (art.mostRenamedFile) {
+      document.getElementById('art-renames').textContent = art.mostRenamedFile.path;
+      document.getElementById('art-renames-sub').textContent = `Shifted identity ${art.mostRenamedFile.renames} times.`;
+    } else {
+      document.getElementById('art-renames').textContent = "None";
+    }
 
-    // Hotspots Churn
+    if (art.zombieDir) {
+      document.getElementById('art-zombie').textContent = art.zombieDir.dir;
+      document.getElementById('art-zombie-sub').textContent = `Massive historical churn (${art.zombieDir.historicalChurn.toLocaleString()} lines), strictly abandoned in the modern era.`;
+    } else {
+      document.getElementById('art-zombie').textContent = "None detected";
+    }
+
+    if (art.largestCommit) {
+      document.getElementById('art-commit').textContent = art.largestCommit.sha.substring(0,8);
+      document.getElementById('art-commit-sub').textContent = `${art.largestCommit.churn.toLocaleString()} lines of absolute chaos by ${art.largestCommit.author}.`;
+    } else {
+      document.getElementById('art-commit').textContent = "None";
+    }
+
+    // Hotspots
     const churnRows = data.hotspots.byChurn.slice(0, 10).map(h => `
       <tr>
-        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${h.path}</td>
-        <td>${h.churn.toLocaleString()}</td>
-        <td>${h.topAuthor}</td>
+        <td class="mono">${h.path}</td>
+        <td class="text-right" style="color:var(--accent)">${h.churn.toLocaleString()}</td>
       </tr>
     `).join('');
     document.getElementById('table-churn').querySelector('tbody').innerHTML = churnRows;
 
+    // Co-change
+    const ccRows = data.cochange.filePairs.slice(0, 8).map(cc => `
+      <tr>
+        <td class="mono">${cc.fileA}</td>
+        <td class="mono">${cc.fileB}</td>
+        <td class="text-right" style="color:var(--accent)">${cc.count}</td>
+      </tr>
+    `).join('');
+    document.getElementById('table-cochange').querySelector('tbody').innerHTML = ccRows;
+
     // Ownership
     const ownRows = data.ownership.slice(0, 10).map(o => {
-      const curators = o.topAuthors.map(a => `${a.author} (${a.pct}%)`).join(', ');
+      const top = o.topAuthors[0];
       return `
       <tr>
-        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${o.file}</td>
-        <td style="color:var(--primary);">${o.concentration}%</td>
-        <td style="font-size:0.9rem;">${curators}</td>
+        <td class="mono">${o.file}</td>
+        <td>${top ? top.author : 'Unknown'}</td>
+        <td class="text-right" style="color:var(--accent)">${o.concentration}%</td>
       </tr>
       `;
     }).join('');
     document.getElementById('table-ownership').querySelector('tbody').innerHTML = ownRows;
 
-    // Cochange
-    const ccRows = data.cochange.filePairs.slice(0, 15).map(cc => `
-      <tr>
-        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${cc.fileA}</td>
-        <td style="font-family:monospace;font-size:0.85rem;word-break:break-all;">${cc.fileB}</td>
-        <td style="text-align:center;">${cc.count}</td>
-      </tr>
-    `).join('');
-    document.getElementById('table-cochange').querySelector('tbody').innerHTML = ccRows;
+    // Eras
+    const erasHtml = data.eras.map(era => {
+      const keywords = era.keywords.map(k => `<span class="keyword-tag">${k.word}</span>`).join('');
+      const tops = era.topFiles.slice(0,4).map(f => `<div class="mono" style="margin-top:0.25rem; font-size:0.8rem; border-left: 2px solid var(--border); padding-left: 0.5rem;">${f.path}</div>`).join('');
+      return `
+        <div class="era-card">
+          <div class="era-header">
+            <span class="era-num">Era ${era.index + 1}</span>
+            <span class="muted" style="font-size:0.8rem">${era.startDate.split('T')[0]}</span>
+          </div>
+          <div style="margin-bottom: 1rem;">${keywords}</div>
+          <div class="muted" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.5rem; color:var(--accent)">Primary Targets</div>
+          ${tops}
+        </div>
+      `;
+    }).join('');
+    document.getElementById('eras-container').innerHTML = erasHtml;
   }
 
-  window.copySummary = () => {
-    if (!reportData) return;
-    const txt = document.getElementById('tourIntro').textContent;
-    navigator.clipboard.writeText(txt).then(() => alert('Summary copied!'));
+  window.copyPlaque = () => {
+    const roast = document.getElementById('plaqueRoast').textContent;
+    const stats = `Commits: ${document.getElementById('st-commits').textContent} | Curators: ${document.getElementById('st-authors').textContent} | Artifacts: ${document.getElementById('st-files').textContent}`;
+    const txt = `🏛️ ${document.getElementById('repoName').textContent}\n\n${roast}\n\n${stats}\n#RepoMuseum`;
+    navigator.clipboard.writeText(txt).then(() => alert('Plaque text copied to clipboard!'));
   };
 
-  loadData();
+  if (window.REPO_DATA) {
+    render(window.REPO_DATA);
+  } else {
+    document.body.innerHTML = '<div style="text-align:center; padding:5rem; color:#888;">No exhibition data found. Run the CLI to generate a report.</div>';
+  }
 </script>
 </body>
 </html>
