@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MuseumReport from './MuseumReport';
+import Dropzone from './Dropzone';
 import { ReportData } from '../../src/types';
 
 /**
@@ -46,6 +47,11 @@ export default function LandingPage() {
     setPhase('LOADING');
     setLoadingText('Awakening the curator...');
     workerRef.current?.postMessage({ type: 'START', url });
+  };
+
+  const handleDossierLoaded = (parsedJson: any) => {
+    setReportData(parsedJson as ReportData);
+    setPhase('MUSEUM');
   };
 
   // We do not return null early here, because we want the fade-out transition 
@@ -108,13 +114,21 @@ export default function LandingPage() {
                   required
                 />
               </div>
-              <div className="mt-16">
+              <div className="mt-16 mb-8">
                 <button type="submit" className="font-label-sm text-label-sm uppercase bg-primary-container text-black px-12 py-4 tracking-widest hover:bg-primary transition-colors flex items-center gap-3">
                   <span className="material-symbols-outlined text-black" style={{ fontSize: '18px' }}>account_balance</span>
                   Begin Curation
                 </button>
               </div>
             </form>
+            
+            <div className="w-full flex items-center justify-center my-4 opacity-50">
+               <div className="h-px w-32 bg-white/20"></div>
+               <span className="font-serif italic text-xs mx-4 uppercase tracking-widest text-stone-500">OR</span>
+               <div className="h-px w-32 bg-white/20"></div>
+            </div>
+
+            <Dropzone onDataLoaded={handleDossierLoaded} />
           </section>
         )}
 
