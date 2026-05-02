@@ -365,6 +365,36 @@ function computeCoChange(
 }
 
 // ---------------------------------------------------------------------------
+// Confessional Analysis
+// ---------------------------------------------------------------------------
+
+function computeConfessional(commits: CommitData[]) {
+  let midnightOil = 0;
+  let weekendWarriors = 0;
+  let swearCount = 0;
+  let panicCount = 0;
+
+  const swearRegex = /\b(fuck|shit|damn|crap|hell|bitch|asshole|wtf)\b/i;
+  const panicRegex = /\b(urgent|hotfix|asap|oops|panic|broken|broke|emergency|fix it)\b/i;
+
+  for (const c of commits) {
+    const d = new Date(c.date);
+    const hour = d.getHours();
+    const day = d.getDay(); // 0 is Sunday, 6 is Saturday
+
+    // Midnight to 4 AM
+    if (hour >= 0 && hour < 5) midnightOil++;
+    // Weekend
+    if (day === 0 || day === 6) weekendWarriors++;
+
+    if (swearRegex.test(c.subject)) swearCount++;
+    if (panicRegex.test(c.subject)) panicCount++;
+  }
+
+  return { midnightOil, weekendWarriors, swearCount, panicCount };
+}
+
+// ---------------------------------------------------------------------------
 // Main build function
 // ---------------------------------------------------------------------------
 
@@ -385,6 +415,7 @@ export function buildReport(
   const ownership = computeOwnership(statsMap, byChurn.map((f) => f.path));
   const artifacts = computeArtifacts(commits, statsMap, trackedFiles);
   const cochange = computeCoChange(commits);
+  const confessional = computeConfessional(commits);
 
   return {
     repo: { name: opts.repoName, path: opts.repoPath, generatedAt: new Date().toISOString(), gitVersion: opts.gitVersion },
@@ -394,5 +425,6 @@ export function buildReport(
     ownership,
     artifacts,
     cochange,
+    confessional,
   };
 }

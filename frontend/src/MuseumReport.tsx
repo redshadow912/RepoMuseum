@@ -6,9 +6,9 @@ interface MuseumReportProps {
 }
 
 export default function MuseumReport({ data }: MuseumReportProps) {
-  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS'>('EXHIBIT');
+  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL'>('EXHIBIT');
 
-  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS') => {
+  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL') => {
     return activeTab === tabName
       ? "flex items-center gap-4 font-serif tracking-widest text-xs uppercase bg-primary-container/10 text-primary-container border-l-2 border-primary-container px-6 py-4 cursor-pointer transition-all duration-300"
       : "flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50 cursor-pointer border-l-2 border-transparent transition-all duration-300";
@@ -71,6 +71,14 @@ export default function MuseumReport({ data }: MuseumReportProps) {
           <div className={getTabClass('GUILDS')} onClick={() => setActiveTab('GUILDS')}>
             <span className="material-symbols-outlined">groups</span>
             <span>The Guilds</span>
+          </div>
+          <div className={getTabClass('ENTANGLEMENT')} onClick={() => setActiveTab('ENTANGLEMENT')}>
+            <span className="material-symbols-outlined">hub</span>
+            <span>The Entanglement</span>
+          </div>
+          <div className={getTabClass('CONFESSIONAL')} onClick={() => setActiveTab('CONFESSIONAL')}>
+            <span className="material-symbols-outlined">nightlight</span>
+            <span>The Confessional</span>
           </div>
         </nav>
       </aside>
@@ -328,6 +336,106 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             {guilds.length === 0 && (
               <p className="text-on-surface-variant font-serif italic text-lg text-center mt-12">No sovereign territories established.</p>
             )}
+          </div>
+        </section>
+        )}
+
+        {/* The Entanglement (Co-change) */}
+        {activeTab === 'ENTANGLEMENT' && (
+        <section className="mb-32 animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-12 border-b border-white/10 pb-4">
+            <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Entanglement</h2>
+            <p className="font-label-sm text-xs text-outline tracking-widest uppercase mt-2">Quantum coupling: Artifacts inextricably linked in history</p>
+          </div>
+          
+          <div className="flex flex-col gap-6">
+            {data?.cochange?.filePairs?.slice(0, 15).map((pair, idx) => (
+              <div key={`${pair.fileA}-${pair.fileB}`} className="glass-case p-6 border border-white/10 bg-transparent backdrop-blur-md relative overflow-hidden group hover:bg-white/5 transition-colors">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  
+                  {/* File A */}
+                  <div className="w-full md:w-2/5 flex flex-col items-start">
+                    <span className="material-symbols-outlined text-primary-container/50 mb-2">description</span>
+                    <p className="font-code-sm text-xs text-on-surface-variant font-mono truncate w-full" title={pair.fileA}>{pair.fileA}</p>
+                  </div>
+
+                  {/* Bond / Gravity */}
+                  <div className="w-full md:w-1/5 flex flex-col items-center justify-center relative">
+                    <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-30 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="bg-background border border-primary-container/30 px-4 py-2 rounded-full z-10 flex items-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-shadow">
+                      <span className="material-symbols-outlined text-[14px] text-primary-container group-hover:animate-spin">sync</span>
+                      <span className="font-display-xl text-xl text-primary-container" style={{ fontFamily: '"Newsreader", serif' }}>{pair.count}</span>
+                    </div>
+                    <p className="font-label-sm text-[8px] text-outline uppercase tracking-widest mt-3 text-center">Co-mutations</p>
+                  </div>
+
+                  {/* File B */}
+                  <div className="w-full md:w-2/5 flex flex-col items-end text-right">
+                    <span className="material-symbols-outlined text-secondary/50 mb-2">description</span>
+                    <p className="font-code-sm text-xs text-on-surface-variant font-mono truncate w-full" title={pair.fileB}>{pair.fileB}</p>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+            
+            {(!data?.cochange?.filePairs || data.cochange.filePairs.length === 0) && (
+              <p className="text-on-surface-variant font-serif italic text-lg text-center mt-12">No significant entanglements detected.</p>
+            )}
+          </div>
+        </section>
+        )}
+
+        {/* The Confessional (Developer Psychology) */}
+        {activeTab === 'CONFESSIONAL' && (
+        <section className="mb-32 animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-12 border-b border-white/10 pb-4">
+            <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Confessional</h2>
+            <p className="font-label-sm text-xs text-outline tracking-widest uppercase mt-2">Circadian rhythms and psychological tolls</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            {/* Midnight Oil */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 text-center">
+               <span className="material-symbols-outlined text-5xl text-primary-container mb-4 opacity-80">routine</span>
+               <h3 className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.confessional?.midnightOil || 0}</h3>
+               <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-4">Midnight Oil</p>
+               <p className="font-serif italic text-on-surface-variant opacity-80 text-sm">
+                 Commits executed between Midnight and 4 AM. The silent hours where logic defies sleep.
+               </p>
+            </div>
+
+            {/* Weekend Warriors */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 text-center">
+               <span className="material-symbols-outlined text-5xl text-primary-container mb-4 opacity-80">weekend</span>
+               <h3 className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.confessional?.weekendWarriors || 0}</h3>
+               <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-4">Weekend Commitments</p>
+               <p className="font-serif italic text-on-surface-variant opacity-80 text-sm">
+                 Saturdays and Sundays sacrificed to the archive. The unending march of progress.
+               </p>
+            </div>
+
+            {/* Swear Count */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 text-center">
+               <span className="material-symbols-outlined text-5xl text-primary-container mb-4 opacity-80">mood_bad</span>
+               <h3 className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.confessional?.swearCount || 0}</h3>
+               <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-4">Profanity Events</p>
+               <p className="font-serif italic text-on-surface-variant opacity-80 text-sm">
+                 Raw frustration permanently etched into the repository ledger. 
+               </p>
+            </div>
+
+            {/* Panic Count */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 text-center">
+               <span className="material-symbols-outlined text-5xl text-primary-container mb-4 opacity-80">warning</span>
+               <h3 className="font-display-xl text-4xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>{data?.confessional?.panicCount || 0}</h3>
+               <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-4">Panic & Hotfixes</p>
+               <p className="font-serif italic text-on-surface-variant opacity-80 text-sm">
+                 "Urgent", "Hotfix", "Oops". Moments of sheer terror, frozen in time forever.
+               </p>
+            </div>
+
           </div>
         </section>
         )}

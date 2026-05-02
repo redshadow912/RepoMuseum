@@ -129,6 +129,12 @@ export interface ReportData {
     filePairs: CoChangePair[];
     dirPairs: DirCoChangePair[];
   };
+  confessional?: {
+    midnightOil: number;
+    weekendWarriors: number;
+    swearCount: number;
+    panicCount: number;
+  };
 }
 
 // ---------------------------------------------------------------------------
