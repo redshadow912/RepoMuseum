@@ -33,12 +33,13 @@ export default function MuseumReport({ data }: MuseumReportProps) {
     <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 bg-background">
       {/* TopAppBar */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 shadow-none bg-black/80 backdrop-blur-md flex justify-between items-center px-12 py-6 max-w-[1400px] mx-auto ml-64" style={{ width: 'calc(100% - 16rem)' }}>
-        <div className="flex items-center gap-8">
+        <div className="flex justify-between items-center w-full">
           <span className="font-serif text-2xl tracking-tighter uppercase italic text-primary-container">RepoMuseum</span>
           <nav className="hidden md:flex gap-6">
-            <a className="font-serif text-lg tracking-wide uppercase text-primary-container border-b border-primary-container pb-1 hover:bg-white/5 transition-all duration-500" href="#">The Archive</a>
-            <a className="font-serif text-lg tracking-wide uppercase text-stone-500 hover:text-stone-300 transition-colors hover:bg-white/5 transition-all duration-500" href="#">Exhibitions</a>
-            <a className="font-serif text-lg tracking-wide uppercase text-stone-500 hover:text-stone-300 transition-colors hover:bg-white/5 transition-all duration-500" href="#">Curator's Notes</a>
+            <a className="font-serif text-xs tracking-widest uppercase text-stone-400 hover:text-primary-container transition-colors duration-300 flex items-center gap-2" href="/" title="Search another repository">
+              <span className="material-symbols-outlined text-sm">search</span>
+              Return to Foyer
+            </a>
           </nav>
         </div>
       </header>
