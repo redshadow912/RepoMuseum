@@ -110,6 +110,7 @@ function buildFileStatsMap(commits: CommitData[]): Map<string, FileStats> {
   );
 
   for (const commit of sorted) {
+    const isBug = /(fix|bug|patch|hotfix|revert)/i.test(commit.subject);
     for (const stat of commit.numStats) {
       if (!stat.path) continue;
       let entry = statsMap.get(stat.path);
@@ -129,7 +130,6 @@ function buildFileStatsMap(commits: CommitData[]): Map<string, FileStats> {
         statsMap.set(stat.path, entry);
       }
 
-      const isBug = /(fix|bug|patch|hotfix|revert)/i.test(commit.subject);
       if (isBug) entry.bugCount += 1;
 
       const churn = stat.added + stat.deleted;
