@@ -6,13 +6,28 @@ interface MuseumReportProps {
 }
 
 export default function MuseumReport({ data }: MuseumReportProps) {
-  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE'>('EXHIBIT');
+  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS'>('EXHIBIT');
 
-  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE') => {
+  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS') => {
     return activeTab === tabName
       ? "flex items-center gap-4 font-serif tracking-widest text-xs uppercase bg-primary-container/10 text-primary-container border-l-2 border-primary-container px-6 py-4 cursor-pointer transition-all duration-300"
       : "flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50 cursor-pointer border-l-2 border-transparent transition-all duration-300";
   };
+
+  const getGuilds = () => {
+    if (!data?.ownership) return [];
+    const authorMap = new Map<string, typeof data.ownership>();
+    data.ownership.forEach(file => {
+      if (file.topAuthors && file.topAuthors.length > 0) {
+        const topAuthor = file.topAuthors[0].author;
+        if (!authorMap.has(topAuthor)) authorMap.set(topAuthor, []);
+        authorMap.get(topAuthor)!.push(file);
+      }
+    });
+    return Array.from(authorMap.entries()).sort((a, b) => b[1].length - a[1].length);
+  };
+
+  const guilds = activeTab === 'GUILDS' ? getGuilds() : [];
 
   return (
     <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 bg-background">
@@ -48,6 +63,14 @@ export default function MuseumReport({ data }: MuseumReportProps) {
           <div className={getTabClass('CRUCIBLE')} onClick={() => setActiveTab('CRUCIBLE')}>
             <span className="material-symbols-outlined">humidity_high</span>
             <span>The Crucible</span>
+          </div>
+          <div className={getTabClass('RELICS')} onClick={() => setActiveTab('RELICS')}>
+            <span className="material-symbols-outlined">diamond</span>
+            <span>The Relics</span>
+          </div>
+          <div className={getTabClass('GUILDS')} onClick={() => setActiveTab('GUILDS')}>
+            <span className="material-symbols-outlined">groups</span>
+            <span>The Guilds</span>
           </div>
         </nav>
       </aside>
@@ -184,6 +207,126 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             ))}
             {(!data?.eras || data.eras.length === 0) && (
               <p className="text-on-surface-variant font-serif italic text-lg text-center mt-12">No strata recorded in the archives.</p>
+            )}
+          </div>
+        </section>
+        )}
+
+        {/* The Relics */}
+        {activeTab === 'RELICS' && (
+        <section className="mb-32 animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-12 border-b border-white/10 pb-4">
+            <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Relics</h2>
+            <p className="font-label-sm text-xs text-outline tracking-widest uppercase mt-2">Peculiar anomalies and historical anchors</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Oldest Relic */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500">
+               <div className="flex items-center gap-4 mb-6">
+                 <span className="material-symbols-outlined text-4xl text-primary-container">hourglass_empty</span>
+                 <div>
+                   <h3 className="font-display-xl text-2xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Genesis Stone</h3>
+                   <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest">Oldest Surviving File</p>
+                 </div>
+               </div>
+               {data?.artifacts?.oldestFile ? (
+                 <>
+                   <p className="font-code-sm text-sm text-primary-container font-mono truncate mb-2">{data.artifacts.oldestFile.path}</p>
+                   <p className="font-serif italic text-on-surface-variant opacity-80 text-sm leading-relaxed">First unearthed on <span className="text-on-surface">{data.artifacts.oldestFile.firstSeen.split('T')[0]}</span>. It has weathered every storm and refactor since the dawn of the archive.</p>
+                 </>
+               ) : (
+                 <p className="font-serif italic text-on-surface-variant opacity-50 text-sm">No ancient relics survived the great rewrites.</p>
+               )}
+            </div>
+
+            {/* Most Renamed */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500">
+               <div className="flex items-center gap-4 mb-6">
+                 <span className="material-symbols-outlined text-4xl text-primary-container">route</span>
+                 <div>
+                   <h3 className="font-display-xl text-2xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Shapeshifter</h3>
+                   <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest">Most Renamed File</p>
+                 </div>
+               </div>
+               {data?.artifacts?.mostRenamedFile ? (
+                 <>
+                   <p className="font-code-sm text-sm text-primary-container font-mono truncate mb-2">{data.artifacts.mostRenamedFile.path}</p>
+                   <p className="font-serif italic text-on-surface-variant opacity-80 text-sm leading-relaxed">A restless artifact, changing its identity <span className="text-on-surface text-lg">{data.artifacts.mostRenamedFile.renames} times</span> across the epochs to evade obsolescence.</p>
+                 </>
+               ) : (
+                 <p className="font-serif italic text-on-surface-variant opacity-50 text-sm">All artifacts have remained steadfast in their identities.</p>
+               )}
+            </div>
+
+            {/* Zombie Directory */}
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 md:col-span-2">
+               <div className="flex items-center gap-4 mb-6">
+                 <span className="material-symbols-outlined text-4xl text-primary-container">skull</span>
+                 <div>
+                   <h3 className="font-display-xl text-2xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Necropolis</h3>
+                   <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest">Zombie Directory</p>
+                 </div>
+               </div>
+               {data?.artifacts?.zombieDir ? (
+                 <>
+                   <p className="font-code-sm text-sm text-primary-container font-mono truncate mb-2">{data.artifacts.zombieDir.dir}</p>
+                   <p className="font-serif italic text-on-surface-variant opacity-80 text-sm leading-relaxed max-w-3xl">
+                     A massive graveyard of code. This directory saw explosive historical churn (<span className="text-on-surface">{data.artifacts.zombieDir.historicalChurn} modifications</span>) but has been entirely abandoned, with only <span className="text-on-surface">{data.artifacts.zombieDir.recentCommits} recent touches</span>. A monument to dead features.
+                   </p>
+                 </>
+               ) : (
+                 <p className="font-serif italic text-on-surface-variant opacity-50 text-sm">The archive is fully alive. No dead zones detected.</p>
+               )}
+            </div>
+          </div>
+        </section>
+        )}
+
+        {/* The Guilds (Ownership) */}
+        {activeTab === 'GUILDS' && (
+        <section className="mb-32 animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-12 border-b border-white/10 pb-4">
+            <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Guilds</h2>
+            <p className="font-label-sm text-xs text-outline tracking-widest uppercase mt-2">Territories and sovereign authors</p>
+          </div>
+          
+          <div className="flex flex-col gap-8">
+            {guilds.map(([author, files], idx) => (
+              <div key={author} className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1 h-full bg-primary-container opacity-30 group-hover:opacity-100 transition-opacity"></div>
+                <div className="flex justify-between items-start mb-6 border-b border-white/5 pb-6">
+                  <div>
+                    <h3 className="font-display-xl text-2xl text-on-surface mb-2 flex items-center gap-3" style={{ fontFamily: '"Newsreader", serif' }}>
+                      <span className="material-symbols-outlined text-primary-container">person</span>
+                      {author}
+                    </h3>
+                    <p className="font-code-sm text-xs text-on-surface-variant font-mono">
+                      Sovereign over {files.length} major artifacts
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {files.slice(0, 6).map(file => (
+                    <div key={file.file} className="bg-white/5 p-4 border border-white/5 hover:border-primary-container/30 transition-colors">
+                      <p className="font-code-sm text-xs text-primary-container font-mono truncate mb-2">{file.file}</p>
+                      <div className="w-full bg-black/50 h-1.5 rounded-full overflow-hidden">
+                         <div className="bg-primary-container h-full" style={{ width: `${file.concentration}%` }}></div>
+                      </div>
+                      <p className="font-label-sm text-[9px] text-outline uppercase tracking-widest mt-2 text-right">{Math.round(file.concentration)}% Ownership Control</p>
+                    </div>
+                  ))}
+                  {files.length > 6 && (
+                    <div className="bg-transparent p-4 flex items-center justify-center border border-dashed border-white/10">
+                      <p className="font-serif italic text-sm text-on-surface-variant opacity-60">+ {files.length - 6} more artifacts in their domain</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {guilds.length === 0 && (
+              <p className="text-on-surface-variant font-serif italic text-lg text-center mt-12">No sovereign territories established.</p>
             )}
           </div>
         </section>
