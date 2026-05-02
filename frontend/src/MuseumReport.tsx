@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReportData } from '../../src/types';
 
 interface MuseumReportProps {
@@ -6,6 +6,14 @@ interface MuseumReportProps {
 }
 
 export default function MuseumReport({ data }: MuseumReportProps) {
+  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE'>('EXHIBIT');
+
+  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE') => {
+    return activeTab === tabName
+      ? "flex items-center gap-4 font-serif tracking-widest text-xs uppercase bg-primary-container/10 text-primary-container border-l-2 border-primary-container px-6 py-4 cursor-pointer transition-all duration-300"
+      : "flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50 cursor-pointer border-l-2 border-transparent transition-all duration-300";
+  };
+
   return (
     <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 bg-background">
       {/* TopAppBar */}
@@ -29,23 +37,24 @@ export default function MuseumReport({ data }: MuseumReportProps) {
           </div>
         </div>
         <nav className="flex-1 flex flex-col gap-2">
-          <a className="flex items-center gap-4 font-serif tracking-widest text-xs uppercase bg-primary-container/10 text-primary-container border-l-2 border-primary-container px-6 py-4 hover:bg-stone-900/50 transition-transform duration-300" href="#">
+          <div className={getTabClass('EXHIBIT')} onClick={() => setActiveTab('EXHIBIT')}>
             <span className="material-symbols-outlined">museum</span>
             <span>Current Exhibit</span>
-          </a>
-          <a className="flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50" href="#">
+          </div>
+          <div className={getTabClass('STRATA')} onClick={() => setActiveTab('STRATA')}>
             <span className="material-symbols-outlined">timeline</span>
             <span>Historical Strata</span>
-          </a>
-          <a className="flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50" href="#">
+          </div>
+          <div className={getTabClass('CRUCIBLE')} onClick={() => setActiveTab('CRUCIBLE')}>
             <span className="material-symbols-outlined">humidity_high</span>
             <span>The Crucible</span>
-          </a>
+          </div>
         </nav>
       </aside>
 
       <main className="flex-1 w-full max-w-[1100px] mx-auto px-10 py-16 pb-32">
         {/* Hero Plaque */}
+        {activeTab === 'EXHIBIT' && (
         <section className="mb-32 relative group">
           <div className="absolute inset-0 spotlight-bg opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
           <div className="glass-case p-12 md:p-16 flex flex-col items-center text-center relative z-10 border border-white/10 bg-transparent backdrop-blur-md">
@@ -90,8 +99,10 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             </div>
           </div>
         </section>
+        )}
 
         {/* The Crucible (Hotspots) */}
+        {activeTab === 'CRUCIBLE' && (
         <section className="mb-32">
           <div className="mb-12 border-b border-white/10 pb-4">
             <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>The Crucible</h2>
@@ -117,6 +128,66 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             </div>
           </div>
         </section>
+        )}
+
+        {/* Historical Strata */}
+        {activeTab === 'STRATA' && (
+        <section className="mb-32">
+          <div className="mb-12 border-b border-white/10 pb-4">
+            <h2 className="font-display-xl text-3xl text-on-surface" style={{ fontFamily: '"Newsreader", serif' }}>Historical Strata</h2>
+            <p className="font-label-sm text-xs text-outline tracking-widest uppercase mt-2">Chronological eras of development</p>
+          </div>
+          <div className="flex flex-col gap-8">
+            {data?.eras?.map((era, i) => (
+              <div key={i} className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1 h-full bg-primary-container opacity-50"></div>
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="font-display-xl text-2xl text-on-surface mb-2" style={{ fontFamily: '"Newsreader", serif' }}>Era {era.index + 1}</h3>
+                    <p className="font-code-sm text-xs text-on-surface-variant font-mono">
+                      {era.startDate ? era.startDate.split('T')[0] : 'Unknown'} — {era.endDate ? era.endDate.split('T')[0] : 'Unknown'}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-display-xl text-3xl text-primary-container" style={{ fontFamily: '"Newsreader", serif' }}>{era.commits}</span>
+                    <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mt-1">Commits</p>
+                  </div>
+                </div>
+                
+                {era.keywords && era.keywords.length > 0 && (
+                  <div className="mb-6">
+                    <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-3">Key Themes</p>
+                    <div className="flex flex-wrap gap-2">
+                      {era.keywords.slice(0, 10).map(kw => (
+                        <span key={kw.word} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full font-mono text-xs text-on-surface-variant">
+                          {kw.word} <span className="opacity-50">({kw.count})</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {era.topFiles && era.topFiles.length > 0 && (
+                  <div>
+                    <p className="font-label-sm text-[10px] text-outline uppercase tracking-widest mb-3">Core Artifacts</p>
+                    <div className="flex flex-col gap-2">
+                      {era.topFiles.slice(0, 3).map(f => (
+                        <div key={f.path} className="flex justify-between text-xs font-mono text-on-surface-variant opacity-80">
+                          <span className="truncate w-3/4">{f.path}</span>
+                          <span>{f.churn}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+            {(!data?.eras || data.eras.length === 0) && (
+              <p className="text-on-surface-variant font-serif italic text-lg text-center mt-12">No strata recorded in the archives.</p>
+            )}
+          </div>
+        </section>
+        )}
       </main>
 
       {/* Footer */}
