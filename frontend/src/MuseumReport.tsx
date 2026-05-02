@@ -6,9 +6,9 @@ interface MuseumReportProps {
 }
 
 export default function MuseumReport({ data }: MuseumReportProps) {
-  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL'>('EXHIBIT');
+  const [activeTab, setActiveTab] = useState<'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL' | 'VAULT'>('EXHIBIT');
 
-  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL') => {
+  const getTabClass = (tabName: 'EXHIBIT' | 'STRATA' | 'CRUCIBLE' | 'RELICS' | 'GUILDS' | 'ENTANGLEMENT' | 'CONFESSIONAL' | 'VAULT') => {
     return activeTab === tabName
       ? "flex items-center gap-4 font-serif tracking-widest text-xs uppercase bg-primary-container/10 text-primary-container border-l-2 border-primary-container px-6 py-4 cursor-pointer transition-all duration-300"
       : "flex items-center gap-4 font-serif tracking-widest text-xs uppercase text-stone-600 px-6 py-4 hover:text-stone-300 hover:bg-stone-900/50 cursor-pointer border-l-2 border-transparent transition-all duration-300";
@@ -94,6 +94,10 @@ export default function MuseumReport({ data }: MuseumReportProps) {
           <div className={getTabClass('CONFESSIONAL')} onClick={() => setActiveTab('CONFESSIONAL')}>
             <span className="material-symbols-outlined">nightlight</span>
             <span>The Confessional</span>
+          </div>
+          <div className={getTabClass('VAULT')} onClick={() => setActiveTab('VAULT')}>
+            <span className="material-symbols-outlined">lock_open</span>
+            <span>The Vault</span>
           </div>
         </nav>
       </aside>
@@ -482,6 +486,49 @@ export default function MuseumReport({ data }: MuseumReportProps) {
                </p>
             </div>
 
+          </div>
+        </section>
+        )}
+
+        {/* The Vault (Security Loopholes) */}
+        {activeTab === 'VAULT' && (
+        <section className="mb-32 animate-[fadeIn_0.5s_ease-out]">
+          <div className="mb-12 border-b border-red-900/30 pb-4 flex items-center gap-4">
+            <span className="material-symbols-outlined text-4xl text-red-500/80">lock_open</span>
+            <div>
+              <h2 className="font-display-xl text-3xl text-red-400" style={{ fontFamily: '"Newsreader", serif' }}>The Vault</h2>
+              <p className="font-label-sm text-xs text-red-500/50 tracking-widest uppercase mt-2">Historical security leaks and vulnerable artifacts</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-6">
+            <p className="font-serif italic text-on-surface-variant opacity-80 text-lg leading-relaxed max-w-3xl mb-4">
+              A historical scan of the repository for sensitive filenames (.env, id_rsa, keys, credentials). Even if deleted, the archive remembers.
+            </p>
+
+            {data?.artifacts?.theBreach && data.artifacts.theBreach.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.artifacts.theBreach.map((breach, idx) => (
+                  <div key={`${breach.path}-${idx}`} className={`glass-case p-6 border ${breach.risk === 'Critical' ? 'border-red-500/50 bg-red-900/10' : 'border-orange-500/30 bg-orange-900/10'} flex flex-col justify-center`}>
+                    <div className="flex justify-between items-start mb-4">
+                      <span className="font-code-sm text-sm text-on-surface font-mono break-all">{breach.path}</span>
+                      <span className={`text-[10px] uppercase tracking-widest px-3 py-1 rounded-full font-bold ${breach.risk === 'Critical' ? 'bg-red-500/20 text-red-400 border border-red-500/50' : 'bg-orange-500/20 text-orange-400 border border-orange-500/50'}`}>
+                        {breach.risk}
+                      </span>
+                    </div>
+                    <p className="font-serif italic text-xs opacity-70 text-on-surface-variant">
+                      {breach.risk === 'Critical' ? 'Critical security leak. Key rotation required immediately if historically exposed.' : 'High risk artifact. Proceed with caution and verify contents.'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="glass-case p-12 border border-green-900/30 bg-green-900/5 text-center">
+                <span className="material-symbols-outlined text-6xl text-green-500/50 mb-4">verified_user</span>
+                <h3 className="font-display-xl text-2xl text-green-400 mb-2" style={{ fontFamily: '"Newsreader", serif' }}>The Vault is Secure</h3>
+                <p className="font-serif italic text-green-500/70 text-sm">No historical leaks of sensitive files (.env, keys, credentials) were detected in the archive.</p>
+              </div>
+            )}
           </div>
         </section>
         )}

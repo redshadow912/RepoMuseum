@@ -323,7 +323,20 @@ function computeArtifacts(
     .filter(f => f.bugCount > 0)
     .map(f => ({ path: f.path, bugCount: f.bugCount }));
 
-  return { oldestFile, mostRenamedFile, zombieDir, largestCommit, bugGraveyard };
+  const breachRegex = /(\.env|credentials|id_rsa|master\.key|secrets|token|passwd|password|aws_access)/i;
+  const theBreach = Array.from(statsMap.values())
+    .filter(f => breachRegex.test(f.path))
+    .map(f => {
+      let risk: "Critical" | "High" | "Medium" = "Medium";
+      const pathLower = f.path.toLowerCase();
+      if (pathLower.includes(".env") || pathLower.includes("id_rsa") || pathLower.includes("aws_")) risk = "Critical";
+      else if (pathLower.includes("secret") || pathLower.includes("credential")) risk = "High";
+      return { path: f.path, risk };
+    })
+    .sort((a, b) => (a.risk === "Critical" ? -1 : a.risk === "High" && b.risk !== "Critical" ? -1 : 1))
+    .slice(0, 15);
+
+  return { oldestFile, mostRenamedFile, zombieDir, largestCommit, bugGraveyard, theBreach };
 }
 
 // ---------------------------------------------------------------------------

@@ -88,6 +88,7 @@ export interface Artifacts {
   zombieDir: { dir: string; historicalChurn: number; recentCommits: number } | null;
   largestCommit: { sha: string; date: string; author: string; subject: string; churn: number } | null;
   bugGraveyard: { path: string; bugCount: number }[];
+  theBreach: { path: string; risk: "Critical" | "High" | "Medium" }[];
 }
 
 /** File co-change pair */
