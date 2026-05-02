@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MuseumReport from './MuseumReport';
 import Dropzone from './Dropzone';
+import TopNavBar from './components/TopNavBar';
+import Footer from './components/Footer';
+import CuratorMethod from './components/CuratorMethod';
+import LoadingDisplay from './components/LoadingDisplay';
+import ErrorDisplay from './components/ErrorDisplay';
 import { ReportData } from '../../src/types';
 
 /**
@@ -67,22 +72,7 @@ export default function LandingPage() {
 
       <div className={`flex flex-col min-h-screen transition-opacity duration-1000 relative z-10 bg-background ${phase === 'MUSEUM' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         
-        {/* Top NavBar from Stitch Design */}
-      <nav className="fixed top-0 w-full z-50 border-b border-stone-800 bg-black/90 backdrop-blur-md" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <div className="flex justify-between items-center px-10 py-6 max-w-[1100px] mx-auto w-full">
-          <div className="font-serif italic text-2xl text-primary-container tracking-widest">
-            RepoMuseum
-          </div>
-          <div className="hidden md:flex space-x-8">
-            <a className="text-stone-400 font-serif italic hover:text-secondary-fixed-dim transition-all duration-500 font-body-md text-body-md" href="#">The Collection</a>
-            <a className="text-stone-400 font-serif italic hover:text-secondary-fixed-dim transition-all duration-500 font-body-md text-body-md" href="#">Exhibitions</a>
-            <a className="text-stone-400 font-serif italic hover:text-secondary-fixed-dim transition-all duration-500 font-body-md text-body-md" href="#">Archives</a>
-          </div>
-          <button className="font-label-sm text-label-sm uppercase tracking-widest text-primary-container border border-primary-container/50 px-4 py-2 hover:bg-primary-container/10 transition-colors">
-            Exhibit Repository
-          </button>
-        </div>
-      </nav>
+        <TopNavBar />
 
       {/* Main Content Canvas */}
       <main className="flex-grow pt-40 pb-margin-page px-6 w-full max-w-[1100px] mx-auto flex flex-col items-center justify-center relative">
@@ -132,87 +122,14 @@ export default function LandingPage() {
           </section>
         )}
 
-        {phase === 'LOADING' && (
-          <section className="w-full max-w-3xl flex flex-col items-center text-center mt-20 mb-32 relative animate-[fadeIn_1s_ease-in]">
-             <div className="mt-12 flex flex-col items-center gap-4 text-primary-fixed-dim">
-                <span className="material-symbols-outlined animate-spin" style={{ fontSize: '48px' }}>hourglass_empty</span>
-                <p className="font-code-sm text-code-sm italic text-xl mt-4">{loadingText}</p>
-                <p className="font-label-sm text-label-sm text-outline-variant uppercase tracking-widest mt-2">Zero-backend execution • Browser memory only</p>
-             </div>
-          </section>
-        )}
+        {phase === 'LOADING' && <LoadingDisplay loadingText={loadingText} />}
 
-        {phase === 'ERROR' && (
-          <section className="w-full max-w-3xl flex flex-col items-center text-center mt-20 mb-32 relative animate-[fadeIn_1s_ease-in]">
-             <div className="w-full p-8 border border-red-900/50 bg-red-950/20 backdrop-blur-md text-red-200">
-                <span className="material-symbols-outlined text-red-500 mb-4" style={{ fontSize: '48px' }}>error</span>
-                <h2 className="font-display-xl text-3xl mb-4" style={{ fontFamily: '"Newsreader", serif' }}>Exhibition Failed</h2>
-                <p className="font-code-sm text-code-sm text-red-300/80 mb-8 whitespace-pre-wrap">{errorMsg}</p>
-                <button 
-                  onClick={() => setPhase('FOYER')} 
-                  className="font-label-sm text-label-sm uppercase bg-red-900/40 text-red-200 px-8 py-3 tracking-widest hover:bg-red-900/60 transition-colors border border-red-900/50"
-                >
-                  Try Again
-                </button>
-             </div>
-          </section>
-        )}
+        {phase === 'ERROR' && <ErrorDisplay errorMsg={errorMsg} onRetry={() => setPhase('FOYER')} />}
 
-        {/* The Curator's Method (Only visible in FOYER to keep UI clean during loading) */}
-        {phase === 'FOYER' && (
-          <section className="w-full mt-margin-page pt-32 border-t border-white/5 relative">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-primary-container/20 to-transparent"></div>
-            <div className="flex flex-col md:flex-row gap-gutter-display items-start">
-              <div className="w-full md:w-1/3">
-                <h2 className="font-headline-lg text-headline-lg text-on-background mb-6">
-                  The Curator's Method
-                </h2>
-                <p className="font-body-md text-body-md text-on-surface-variant mb-8">
-                  Our archival process treats code not as mere instructions, but as structural art. We extract the narrative embedded in version control.
-                </p>
-              </div>
-              <div className="w-full md:w-2/3 grid grid-cols-1 gap-8">
-                <div className="glass-case glass-case-hover p-8 relative flex gap-6">
-                  <div className="w-12 h-12 flex-shrink-0 border border-primary-container/30 rounded-full flex items-center justify-center">
-                    <span className="font-code-sm text-code-sm text-primary-fixed-dim">01</span>
-                  </div>
-                  <div>
-                    <h3 className="font-label-sm text-label-sm uppercase tracking-widest text-primary-container mb-3">Stratigraphy</h3>
-                    <p className="font-body-md text-body-md text-on-background/80">
-                      We excavate the commit history, mapping the tectonic shifts of architecture over time to reveal foundational decisions.
-                    </p>
-                  </div>
-                </div>
-                <div className="glass-case glass-case-hover p-8 relative flex gap-6 ml-0 md:ml-12">
-                  <div className="w-12 h-12 flex-shrink-0 border border-primary-container/30 rounded-full flex items-center justify-center">
-                    <span className="font-code-sm text-code-sm text-primary-fixed-dim">02</span>
-                  </div>
-                  <div>
-                    <h3 className="font-label-sm text-label-sm uppercase tracking-widest text-primary-container mb-3">Taxonomy</h3>
-                    <p className="font-body-md text-body-md text-on-background/80">
-                      Modules, classes, and functions are cataloged and mounted like rare specimens, their dependencies illuminated.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {phase === 'FOYER' && <CuratorMethod />}
       </main>
 
-      {/* Footer */}
-      <footer className="w-full border-t border-stone-900 mt-auto bg-black relative" style={{ borderTop: '0.5px solid rgba(212, 175, 55, 0.3)' }}>
-        <div className="flex flex-col md:flex-row justify-between items-center px-10 py-16 max-w-[1100px] mx-auto w-full opacity-80 hover:opacity-100 transition-opacity duration-300">
-          <div className="font-serif text-stone-500 text-xs tracking-widest uppercase font-label-sm text-label-sm mb-8 md:mb-0">
-            © 2026 RepoMuseum — All Rights Reserved. Curated for the Digital Archive.
-          </div>
-          <div className="flex flex-wrap justify-center gap-6">
-            <a className="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Provenance</a>
-            <a className="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Acquisitions</a>
-            <a className="font-serif text-stone-600 text-xs tracking-widest uppercase hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Security</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <style>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
