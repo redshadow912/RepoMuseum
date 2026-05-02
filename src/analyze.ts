@@ -33,6 +33,7 @@ interface FileStats {
   authorChurn: Map<string, number>;
   firstSeen: string;
   renames: number;
+  bugCount: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -123,9 +124,13 @@ function buildFileStatsMap(commits: CommitData[]): Map<string, FileStats> {
           authorChurn: new Map(),
           firstSeen: commit.date,
           renames: 0,
+          bugCount: 0,
         };
         statsMap.set(stat.path, entry);
       }
+
+      const isBug = /(fix|bug|patch|hotfix|revert)/i.test(commit.subject);
+      if (isBug) entry.bugCount += 1;
 
       const churn = stat.added + stat.deleted;
       entry.added += stat.added;
@@ -157,6 +162,7 @@ function buildFileStatsMap(commits: CommitData[]): Map<string, FileStats> {
           authorChurn: new Map(),
           firstSeen: commit.date,
           renames: 1,
+          bugCount: isBug ? 1 : 0,
         });
       }
     }
@@ -311,7 +317,13 @@ function computeArtifacts(
     }
   }
 
-  return { oldestFile, mostRenamedFile, zombieDir, largestCommit };
+  const bugGraveyard = Array.from(statsMap.values())
+    .sort((a, b) => b.bugCount - a.bugCount)
+    .slice(0, 5)
+    .filter(f => f.bugCount > 0)
+    .map(f => ({ path: f.path, bugCount: f.bugCount }));
+
+  return { oldestFile, mostRenamedFile, zombieDir, largestCommit, bugGraveyard };
 }
 
 // ---------------------------------------------------------------------------
@@ -391,7 +403,18 @@ function computeConfessional(commits: CommitData[]) {
     if (panicRegex.test(c.subject)) panicCount++;
   }
 
-  return { midnightOil, weekendWarriors, swearCount, panicCount };
+  const totalCommits = commits.length || 1;
+  const weekendPct = weekendWarriors / totalCommits;
+  let cultureBadge = "9-to-5 Enterprise";
+  if (weekendPct > 0.3) {
+    cultureBadge = "Weekend Warrior";
+  } else if (midnightOil > totalCommits * 0.15) {
+    cultureBadge = "The Midnight Monolith";
+  } else if (swearCount > totalCommits * 0.05) {
+    cultureBadge = "The Frustration Engine";
+  }
+
+  return { midnightOil, weekendWarriors, swearCount, panicCount, cultureBadge };
 }
 
 // ---------------------------------------------------------------------------

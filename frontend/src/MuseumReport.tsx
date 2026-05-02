@@ -29,6 +29,16 @@ export default function MuseumReport({ data }: MuseumReportProps) {
 
   const guilds = activeTab === 'GUILDS' ? getGuilds() : [];
 
+  const handleDownload = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `${data.repo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_dossier.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   return (
     <div className="antialiased min-h-screen flex flex-col pt-24 pl-64 bg-background">
       {/* TopAppBar */}
@@ -36,6 +46,10 @@ export default function MuseumReport({ data }: MuseumReportProps) {
         <div className="flex justify-between items-center w-full">
           <span className="font-serif text-2xl tracking-tighter uppercase italic text-primary-container">RepoMuseum</span>
           <nav className="hidden md:flex gap-6">
+            <button onClick={handleDownload} className="font-serif text-xs tracking-widest uppercase text-stone-400 hover:text-primary-container transition-colors duration-300 flex items-center gap-2" title="Download Full JSON Dossier">
+              <span className="material-symbols-outlined text-sm">download</span>
+              Export JSON
+            </button>
             <a className="font-serif text-xs tracking-widest uppercase text-stone-400 hover:text-primary-container transition-colors duration-300 flex items-center gap-2" href="/" title="Search another repository">
               <span className="material-symbols-outlined text-sm">search</span>
               Return to Foyer
@@ -269,7 +283,7 @@ export default function MuseumReport({ data }: MuseumReportProps) {
             </div>
 
             {/* Zombie Directory */}
-            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500 md:col-span-2">
+            <div className="glass-case p-8 border border-white/10 bg-transparent backdrop-blur-md hover:bg-white/5 transition-colors duration-500">
                <div className="flex items-center gap-4 mb-6">
                  <span className="material-symbols-outlined text-4xl text-primary-container">skull</span>
                  <div>
@@ -288,6 +302,32 @@ export default function MuseumReport({ data }: MuseumReportProps) {
                  <p className="font-serif italic text-on-surface-variant opacity-50 text-sm">The archive is fully alive. No dead zones detected.</p>
                )}
             </div>
+
+            {/* The Bug Graveyard */}
+            {data?.artifacts?.bugGraveyard && data.artifacts.bugGraveyard.length > 0 && (
+              <div className="glass-case p-8 border border-red-900/30 bg-red-900/5 backdrop-blur-md hover:bg-red-900/10 transition-colors duration-500 md:col-span-2">
+                 <div className="flex items-center gap-4 mb-6">
+                   <span className="material-symbols-outlined text-4xl text-red-500/70">pest_control</span>
+                   <div>
+                     <h3 className="font-display-xl text-2xl text-red-400" style={{ fontFamily: '"Newsreader", serif' }}>The Bug Graveyard</h3>
+                     <p className="font-label-sm text-[10px] text-red-500/50 uppercase tracking-widest">Most Historically Fragile Artifacts</p>
+                   </div>
+                 </div>
+                 <p className="font-serif italic text-on-surface-variant opacity-80 text-sm leading-relaxed max-w-3xl mb-6">
+                   Tread carefully. These artifacts have historically caused the most system failures and required the highest volume of emergency hotfixes.
+                 </p>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                   {data.artifacts.bugGraveyard.map(bugFile => (
+                     <div key={bugFile.path} className="flex justify-between items-center bg-black/40 border border-red-900/20 px-4 py-3 rounded-md">
+                       <span className="font-code-sm text-xs text-on-surface-variant font-mono truncate w-2/3" title={bugFile.path}>{bugFile.path.split('/').pop()}</span>
+                       <span className="font-display-xl text-lg text-red-400 flex items-center gap-1" style={{ fontFamily: '"Newsreader", serif' }}>
+                         {bugFile.bugCount} <span className="material-symbols-outlined text-[12px] opacity-50">bug_report</span>
+                       </span>
+                     </div>
+                   ))}
+                 </div>
+              </div>
+            )}
           </div>
         </section>
         )}
@@ -318,8 +358,13 @@ export default function MuseumReport({ data }: MuseumReportProps) {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {files.slice(0, 6).map(file => (
-                    <div key={file.file} className="bg-white/5 p-4 border border-white/5 hover:border-primary-container/30 transition-colors">
-                      <p className="font-code-sm text-xs text-primary-container font-mono truncate mb-2">{file.file}</p>
+                    <div key={file.file} className="bg-white/5 p-4 border border-white/5 hover:border-primary-container/30 transition-colors relative">
+                      {file.concentration > 85 && (
+                        <div className="absolute top-2 right-2 bg-red-900/40 border border-red-500/50 text-red-400 text-[8px] uppercase tracking-widest px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[10px]">warning</span> High Truck Factor
+                        </div>
+                      )}
+                      <p className="font-code-sm text-xs text-primary-container font-mono truncate mb-2 pr-24" title={file.file}>{file.file.split('/').pop()}</p>
                       <div className="w-full bg-black/50 h-1.5 rounded-full overflow-hidden">
                          <div className="bg-primary-container h-full" style={{ width: `${file.concentration}%` }}></div>
                       </div>
